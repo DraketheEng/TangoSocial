@@ -1,10 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-      "./src/**/*.{html,ts}"
-    ],
-    theme: {
-      extend: {},
-    },
-    plugins: [require("daisyui")],
-  }
+  content: [
+    "./src/**/*.{html,ts,scss}"
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require("daisyui"),
+  ],
+  daisyui: {
+    themes: "nord --default, abyss --prefersdark, cupcake, dracula",
+  },
+}
