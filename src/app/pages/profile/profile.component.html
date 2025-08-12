@@ -1,0 +1,160 @@
+<section class="py-12 bg-base-100 text-gray-800" style="margin-top: 6rem">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row items-center bg-white shadow-lg rounded-lg p-6 mb-8 gap-6">
+      <img [src]="user.avatar" alt="{{ user.name }}" class="w-28 h-28 rounded-full border-4" [style.borderColor]="'var(--ts-primary)'" />
+      <div class="flex-1">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-extrabold" style="color:var(--ts-primary)">{{ user.name }}</h1>
+            <p class="text-sm text-muted mt-1">{{ user.title }}</p>
+            <p class="text-sm text-muted mt-1">{{ user.location }}</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button (click)="toggleFollow($event)" class="ts-btn" [ngClass]="following ? 'ts-btn-ghost' : 'ts-btn-primary'">
+              <i class="fa-solid" [ngClass]="following ? 'fa-user-check' : 'fa-user-plus'"></i>
+              <span>{{ following ? 'Takiptesin' : 'Takip Et' }}</span>
+            </button>
+
+            <button routerLink="/mesajlar" class="ts-btn ts-btn-ghost">
+              <i class="fa-solid fa-envelope mr-2"></i> Mesaj Gönder
+            </button>
+
+            <a routerLink="/okullar/capital-tango" class="ts-btn ts-btn-primary" style="background: linear-gradient(90deg,var(--ts-secondary), var(--ts-secondary-600))">
+              <i class="fa-solid fa-building-columns mr-2"></i> Capital Tango
+            </a>
+          </div>
+        </div>
+
+        <p class="text-gray-700 mt-4">{{ user.bio }}</p>
+
+        <div class="mt-4 grid grid-cols-3 gap-4 text-center">
+          <div class="card p-3">
+            <div class="text-sm text-muted">Takipçi</div>
+            <div class="font-bold text-lg">{{ user.followers | number }}</div>
+          </div>
+          <div class="card p-3">
+            <div class="text-sm text-muted">Takip Edilen</div>
+            <div class="font-bold text-lg">{{ user.following }}</div>
+          </div>
+          <div class="card p-3">
+            <div class="text-sm text-muted">Toplam Ders</div>
+            <div class="font-bold text-lg">{{ user.lessons }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid: Left column (about + events) & Right column (posts grid) -->
+    <div class="grid lg:grid-cols-3 gap-8">
+
+      <!-- Left column -->
+      <aside class="lg:col-span-1 space-y-6">
+        <div class="card bg-white p-6 shadow-md">
+          <h3 class="font-semibold text-lg text-gray-800">Hakkında</h3>
+          <p class="text-sm text-muted mt-2 leading-relaxed">{{ user.bio }}</p>
+          <div class="mt-4">
+            <h4 class="font-semibold">Uzmanlık</h4>
+            <ul class="list-disc pl-5 text-sm mt-2 text-gray-700">
+              <li>Tango Escenario</li>
+              <li>Milonga & Salon Stil</li>
+              <li>Performans Koçluğu</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card bg-white p-6 shadow-md">
+          <h3 class="font-semibold text-lg text-gray-800">Yaklaşan Dersler</h3>
+          <ul class="mt-3 space-y-3 text-sm text-gray-700">
+            <li><strong>8 Ağu 2025</strong> • Escenario Teknikleri • 18:00</li>
+            <li><strong>15 Ağu 2025</strong> • Milonga Pratiği • 20:00</li>
+          </ul>
+          <a routerLink="/takvim" class="ts-btn ts-btn-ghost mt-4 w-full text-center">Tüm Takvimi Gör</a>
+        </div>
+
+        <div class="card bg-white p-6 shadow-md text-center">
+          <h3 class="font-semibold">İletişim</h3>
+          <p class="text-sm text-muted mt-2">stüdyo@capitaltango.com</p>
+          <p class="text-sm text-muted">+90 555 123 4567</p>
+          <button class="ts-btn ts-btn-primary mt-4 w-full" routerLink="/mesajlar">Hemen Mesaj Gönder</button>
+        </div>
+      </aside>
+
+      <!-- Posts grid -->
+      <main class="lg:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-semibold text-gray-800">Son Paylaşımlar</h2>
+          <div class="text-sm text-muted">Toplam: {{ posts.length }}</div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <article *ngFor="let post of posts"
+                   class="card overflow-hidden cursor-pointer hover:shadow-xl transition-transform"
+                   (click)="openPost(post.id)"
+                   role="link" tabindex="0"
+                   (keydown.enter)="openPost(post.id)">
+
+            <!-- Görsel varsa: mevcut görsel kart -->
+            <ng-container *ngIf="post.imageUrl; else textOnlyTemplate">
+              <div class="relative">
+                <img [src]="post.imageUrl" alt="post image" class="w-full h-64 object-cover" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[rgba(15,23,36,0.6)] to-transparent p-3">
+                  <div class="text-sm text-white line-clamp-2">{{ post.caption }}</div>
+                </div>
+              </div>
+
+              <div class="p-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <img [src]="user.avatar" alt="author" class="w-8 h-8 rounded-full border" />
+                    <div>
+                      <div class="text-sm font-semibold text-gray-800">{{ user.name }}</div>
+                      <div class="text-xs text-muted">{{ post.city }} • {{ post.createdAt | date:'shortDate' }}</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <button class="ts-btn ts-btn-ghost btn-sm" (click)="onPostAction($event, 'save', post)" aria-label="Kaydet">
+                      <i class="fa-regular fa-bookmark"></i>
+                    </button>
+                    <button class="ts-btn btn-sm" (click)="onPostAction($event, 'like', post)" aria-label="Beğen">
+                      <i class="fa-regular fa-heart mr-2"></i> <span class="text-sm">{{ post.likesCount }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Görsel yoksa: sadece içerik göster -->
+            <ng-template #textOnlyTemplate>
+              <div class="p-5 card--text">
+                <div class="text-gray-800 leading-relaxed" [innerText]="post.caption"></div>
+
+                <div class="mt-4 flex items-center justify-between text-sm text-muted">
+                  <div>{{ post.city || '—' }} • {{ post.createdAt | date:'shortDate' }}</div>
+                  <div class="flex items-center gap-2">
+                    <button class="ts-btn ts-btn-ghost btn-sm" (click)="onPostAction($event,'save',post)" aria-label="Kaydet">
+                      <i class="fa-regular fa-bookmark"></i>
+                    </button>
+                    <button class="ts-btn btn-sm" (click)="onPostAction($event,'like',post)" aria-label="Beğen">
+                      <i class="fa-regular fa-heart mr-2"></i> <span class="text-sm">{{ post.likesCount }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+          </article>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button class="ts-btn ts-btn-ghost" (click)="loadMore()">Daha Fazla Yükle</button>
+        </div>
+      </main>
+    </div>
+
+
+  </div>
+</section>

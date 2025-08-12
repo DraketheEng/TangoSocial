@@ -1,0 +1,170 @@
+<header class="ts-header">
+  <div class="ts-container">
+
+    <div class="left">
+      <a routerLink="/" class="ts-logo-block no-underline" title="TangoSocial Ana Sayfa">
+        <div class="ts-logo-mark">
+          <span class="logo-bongita">T</span>
+        </div>
+        <div>
+          <div class="ts-logo-title">Tango<span class="ts-logo-sub">Social</span></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="center">
+      <div class="relative w-full max-w-lg">
+        <i class="fa-solid fa-magnifying-glass text-muted absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input type="text" placeholder="Dansçı, milonga veya gönderi ara..." class="input w-full pl-10" aria-label="Ara" />
+      </div>
+    </div>
+
+    <div class="right">
+
+      <button routerLink="/yeni-gonderi" class="ts-btn ts-btn-primary hidden md:inline-flex">
+        <i class="fa-solid fa-plus"></i>
+        <span>Yeni Gönderi</span>
+      </button>
+
+      <!-- MESSAGES DROPDOWN -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="ts-action" aria-haspopup="true" aria-expanded="false">
+          <span class="icon-hit"><i class="fa-regular fa-message text-xl text-muted"></i></span>
+          <span class="ts-nav-badge">3</span>
+        </div>
+
+        <div tabindex="0" class="dropdown-content ts-dropdown-panel w-96 p-0" (click)="$event.stopPropagation()">
+          <div class="p-3 border-b border-[var(--ts-border)] flex items-center justify-between">
+            <h3 class="font-bold text-base">Mesajlar</h3>
+            <div class="flex gap-2 items-center">
+              <button class="ts-btn btn-sm btn-ghost text-sm" title="Tümünü okundu yap">Tümünü Okundu</button>
+              <a routerLink="/mesajlar" class="text-xs font-semibold text-[var(--ts-muted)] hover:text-[var(--ts-primary)]">Tümünü Gör</a>
+            </div>
+          </div>
+
+          <ul class="max-h-72 overflow-y-auto divide-y" role="menu" aria-label="Yeni mesajlar">
+            <!-- item -->
+            <li class="p-3 hover:bg-[rgba(15,23,36,0.02)]">
+              <a class="flex gap-3 items-start no-underline" href="#" role="menuitem">
+                <img class="w-12 h-12 rounded-full object-cover shrink-0" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Ayşe" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <div class="font-semibold text-sm truncate">Ayşe Tango</div>
+                      <span class="badge badge-ghost text-xs">Dansçı</span>
+                    </div>
+                    <div class="text-xs text-[var(--ts-muted)]">5 dk</div>
+                  </div>
+                  <p class="text-sm text-[color:var(--ts-text)] opacity-90 mt-1 truncate">Yarınki milonga için rezervasyon yaptım — sen de geliyor musun?</p>
+                </div>
+                <div class="ml-2 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-[var(--ts-primary)] block"></span>
+                </div>
+              </a>
+            </li>
+
+            <li class="p-3 hover:bg-[rgba(15,23,36,0.02)]">
+              <a class="flex gap-3 items-start no-underline" href="#" role="menuitem">
+                <img class="w-12 h-12 rounded-full object-cover shrink-0" src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="Carlos" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="font-semibold text-sm truncate">Carlos Pérez</div>
+                    <div class="text-xs text-[var(--ts-muted)]">1 sa</div>
+                  </div>
+                  <p class="text-sm text-[color:var(--ts-text)] opacity-90 mt-1 truncate">Yeni playlisti paylaştım, dinleyince söyle.</p>
+                </div>
+              </a>
+            </li>
+
+            <!-- daha fazla item... -->
+          </ul>
+
+          <div class="p-3 border-t border-[var(--ts-border)] flex gap-2">
+            <button routerLink="/mesajlar/new" class="ts-btn ts-btn-primary w-full">Yeni Mesaj</button>
+            <button routerLink="/mesajlar" class="ts-btn btn-sm w-1/3 btn-ghost">Aç</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS DROPDOWN -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="ts-action" aria-haspopup="true" aria-expanded="false">
+          <span class="icon-hit"><i class="fa-regular fa-bell text-xl text-muted"></i></span>
+          <span class="ts-nav-badge secondary">5</span>
+        </div>
+
+        <div tabindex="0" class="dropdown-content ts-dropdown-panel w-80 p-0" (click)="$event.stopPropagation()">
+          <div class="p-3 border-b border-[var(--ts-border)] flex items-center justify-between">
+            <h3 class="font-bold text-base">Bildirimler</h3>
+            <div class="flex gap-2 items-center">
+              <button class="ts-btn btn-sm btn-ghost text-sm" title="Temizle">Temizle</button>
+              <a routerLink="/bildirimler" class="text-xs font-semibold text-[var(--ts-muted)] hover:text-[var(--ts-primary)]">Tümünü Gör</a>
+            </div>
+          </div>
+
+          <ul class="max-h-72 overflow-y-auto divide-y">
+            <li class="p-3 hover:bg-[rgba(15,23,36,0.02)]">
+              <a class="flex gap-3 items-start no-underline" href="#" role="menuitem">
+                <div class="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(6,182,212,0.08)] text-[var(--ts-secondary)]">
+                  <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm"><strong>Yeni Milonga:</strong> "Tango Luna" etkinliği için rezervasyonlar açıldı.</p>
+                  <div class="text-xs text-[var(--ts-muted)] mt-1">3 saat önce</div>
+                </div>
+              </a>
+            </li>
+
+            <li class="p-3 hover:bg-[rgba(15,23,36,0.02)]">
+              <a class="flex gap-3 items-start no-underline" href="#" role="menuitem">
+                <div class="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(6,182,212,0.06)] text-[var(--ts-primary)]">
+                  <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm"><strong>Maria</strong> seni takip etmeye başladı.</p>
+                  <div class="text-xs text-[var(--ts-muted)] mt-1">Bugün</div>
+                </div>
+              </a>
+            </li>
+            <!-- diğer bildirimler -->
+          </ul>
+
+          <div class="p-3 border-t border-[var(--ts-border)] flex items-center gap-2">
+            <button routerLink="/bildirimler" class="ts-btn ts-btn-primary w-full">Tüm Bildirimleri Gör</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE DROPDOWN -->
+      <div class="dropdown dropdown-end">
+        <label tabindex="0" class="ts-avatar-btn cursor-pointer" aria-haspopup="true" aria-expanded="false">
+          <img src="https://i.pravatar.cc/100" alt="User avatar" />
+        </label>
+
+        <div tabindex="0" class="dropdown-content ts-dropdown-panel w-60 p-0" (click)="$event.stopPropagation()">
+          <!-- Profile head -->
+          <div class="p-4 border-b border-[var(--ts-border)] flex items-center gap-3">
+            <img src="https://i.pravatar.cc/100" alt="profile" class="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+            <div>
+              <div class="font-semibold">Öyküm Çayır</div>
+              <div class="text-xs text-[var(--ts-muted)]">Capital Tango • Eğitmen</div>
+            </div>
+          </div>
+
+          <!-- Quick links -->
+          <ul class="menu p-2">
+            <li><a routerLink="/profil/oykum-cayir"><i class="fa-solid fa-user mr-2 w-4"></i> Profilim</a></li>
+            <li><a routerLink="/ayarlar"><i class="fa-solid fa-gear mr-2 w-4"></i> Ayarlar</a></li>
+            <li><a routerLink="/okullar"><i class="fa-solid fa-school mr-2 w-4"></i> Okullar</a></li>
+            <li><a routerLink="/etkinlikler"><i class="fa-solid fa-calendar-days mr-2 w-4"></i> Etkinlikler</a></li>
+          </ul>
+
+          <div class="p-3 border-t border-[var(--ts-border)]">
+            <button routerLink="/giris" class="ts-btn ts-btn-event w-full">Çıkış Yap</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>

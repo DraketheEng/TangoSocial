@@ -1,0 +1,639 @@
+<section class="mt-10">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- MAIN (2/3) -->
+      <main class="lg:col-span-2 space-y-6">
+
+        <!-- FEED WRAPPER -->
+        <section class="max-w-screen-xl mx-auto space-y-8">
+
+          <!-- LIST TITLE -->
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-extrabold" style="color:var(--ts-primary)">Arkadaşlarından Gelen Paylaşımlar</h2>
+            <div class="flex items-center gap-3 relative">
+              <button (click)="toggleFilterDropdown($event)" class="btn btn-ghost text-sm hidden sm:inline">
+                Filtrele
+              </button>
+
+              <div *ngIf="filterDropdownOpen" class="absolute right-0 mt-10 w-48 bg-white shadow-lg rounded-md z-50">
+                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100" (click)="applyFilter('newest')">En Yeni</button>
+                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100" (click)="applyFilter('popular')">Popüler</button>
+                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100" (click)="applyFilter('following')">Takip Edilenler</button>
+                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100" (click)="applyFilter('clear')">Filtreyi Temizle</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- POST CARD (repeatable) -->
+          <ng-container *ngFor="let post of posts">
+          <article class="card bg-white border-[1px] border-[rgba(15,23,36,0.06)] rounded-[1rem] overflow-hidden shadow-sm grid grid-cols-1 lg:grid-cols-2 gap-6 p-0 items-stretch">
+            <!-- IMAGE / MEDIA -->
+            <div class="relative">
+              <img [src]="post.imageUrl"
+                   alt="Milonga"
+                   class="w-full h-full object-cover aspect-[4/5] lg:aspect-auto rounded-l-[1rem]" />
+              <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[rgba(15,23,36,0.08)] to-transparent pointer-events-none"></div>
+            </div>
+
+            <div class="p-6 flex flex-col justify-start gap-4 min-h-0">
+              <!-- HEADER ROW (avatar + actions) -->
+              <div class="flex items-start gap-4">
+                <img [src]="post.authorAvatar" alt="avatar" class="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-4">
+                    <div>
+                      <h4 class="font-bold text-gray-800">{{ post.author }}</h4>
+                      <p class="text-xs text-muted">{{ post.createdAt | date:'short' }} • {{ post.city }}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 relative">
+                      <!-- Kaydet -->
+                      <button (click)="onSave($event)" class="btn btn-ghost btn-sm" aria-label="Kaydet">
+                        <i class="fa-regular fa-bookmark"></i>
+                      </button>
+
+                      <!-- Daha fazla -> dropdown -->
+                      <button #moreBtn (click)="toggleMore($event, post.id)" class="btn btn-ghost btn-sm" aria-label="Daha fazla">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+
+                      <div *ngIf="openDropdownForPostId === post.id" class="absolute right-0 top-0 mt-2 ts-dropdown-panel w-44" (click)="$event.stopPropagation()">
+                        <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="report(post.id)">Rapor Et</button>
+                        <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="mute(post.id)">Kişiyi Sessize Al</button>
+                        <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="bookmark(post.id)">İşaretle</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CAPTION (yukarıda) -->
+              <p class="text-gray-700 leading-relaxed">
+                {{ post.caption }}
+              </p>
+
+              <!-- ***** Buradan itibaren herşey EN ALTA gelecek: mt-auto ***** -->
+              <div class="mt-auto space-y-2 text-sm">
+                <div class="flex items-center gap-3">
+                  <span class="badge badge-primary">Popüler</span>
+                  <p class="text-muted text-xs">{{ post.likesCount }} beğeni • {{ post.commentsCount }} yorum</p>
+                </div>
+
+                <div class="flex flex-col gap-2" *ngIf="post.topComments?.length">
+                  <div class="flex items-start gap-3" *ngFor="let c of post.topComments">
+                    <img [src]="c.avatarUrl" class="w-8 h-8 rounded-full" alt="c1" />
+                    <div>
+                      <div class="text-sm"><strong>{{ c.author }}</strong> {{ c.text }}</div>
+                      <div class="text-xs text-muted">{{ c.createdAt | date:'shortTime' }} • {{ c.likes || 0 }} beğeni</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- "Tüm yorumları gör" tam border üstünde duracak şekilde burada -->
+                <div class="mt-2">
+                  <button class="text-xs text-muted hover:underline">Tüm yorumları gör ({{ post.commentsCount }})</button>
+                </div>
+
+                <!-- action row (border altında) -->
+                <div class="mt-3 border-t pt-4 flex items-center gap-3">
+                  <div class="flex items-center gap-2">
+                    <button class="ts-btn ts-btn-primary ts-like-btn px-3 py-1 text-sm" (click)="onLike()">
+                      <i class="fa-regular fa-heart mr-2"></i> Beğen
+                    </button>
+
+                    <label for="my_modal_7" class="btn btn-ghost btn-sm">
+                      <i class="fa-solid fa-share-nodes mr-1"></i> Paylaş
+                    </label>
+
+                  </div>
+                </div>
+
+                <!-- comment form (en altta) -->
+                <form class="ml-auto flex items-center gap-2 w-full" (submit)="submitComment($event)">
+                  <input #commentInput type="text" placeholder="Yorum ekle..." class="input flex-1 rounded-full px-3 py-2 text-sm" />
+                  <button class="text-[var(--ts-primary)] font-semibold text-sm" type="submit">Gönder</button>
+                </form>
+              </div>
+              <!-- ***** mt-auto sonu ***** -->
+
+            </div>
+          </article>
+          </ng-container>
+
+          <!-- TOAST -->
+          <div *ngIf="showToast" class="fixed top-6 right-6" style="z-index: 9999">
+            <div class="bg-gray-900 text-white px-4 py-2 rounded-md shadow-lg">
+              {{ toastText }}
+            </div>
+          </div>
+
+        </section>
+      </main>
+
+      <!-- SIDEBAR (1/3) -->
+      <aside class="space-y-6 lg:sticky lg:top-6">
+        <!-- TOP DANCERS -->
+        <div class="card p-5 bg-white rounded-[1rem] shadow-sm">
+          <h3 class="text-xl font-bold mb-4" style="color:var(--ts-primary)">Ankara'nın En İyi Dansçıları</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <!-- dancer -->
+            <a routerLink="/profil/oykum-cayir" class="group block no-underline" aria-label="Selin G. profilini aç" title="Selin G. profiline git">
+              <div
+                class="flex flex-col items-center text-center p-4 rounded-lg border border-[rgba(15,23,36,0.04)]
+           hover:shadow-lg hover:scale-[1.02] transition-transform duration-200 ease-out
+           focus:outline-none focus:ring-4 focus:ring-[var(--ts-focus)]"
+                role="link"
+                tabindex="0"
+              >
+                <img
+                  src="https://img.daisyui.com/images/profile/demo/yellingwoman@192.webp"
+                  alt="Selin G. avatar"
+                  class="w-20 h-20 rounded-full mb-2 object-cover"
+                />
+
+                <div class="font-semibold text-gray-800 flex items-center gap-2">
+                  <span>Selin G.</span>
+                  <span class="text-xs text-muted">• Ankara</span>
+                </div>
+
+                <div class="text-sm text-muted">
+                  Tango Nuevo • <strong class="text-[var(--ts-primary)]">4.9</strong>
+                </div>
+
+                <div class="text-xs text-muted mt-2">
+                  Kızılay · Haftalık atölye (Cts) · Eğitmen: Selin
+                </div>
+
+
+              </div>
+            </a>
+
+            <a routerLink="/profil/oykum-cayir" class="group block no-underline" aria-label="Ceren A. profilini aç" title="Ceren A. profiline git">
+              <div
+                class="flex flex-col items-center text-center p-4 rounded-lg border border-[rgba(15,23,36,0.04)]
+           hover:shadow-lg hover:scale-[1.02] transition-transform duration-200 ease-out
+           focus:outline-none focus:ring-4 focus:ring-[var(--ts-focus)]"
+                role="link"
+                tabindex="0"
+              >
+                <img
+                  src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp"
+                  alt="Ceren A. avatar"
+                  class="w-20 h-20 rounded-full mb-2 object-cover"
+                />
+
+                <div class="font-semibold text-gray-800 flex items-center gap-2">
+                  <span>Ceren A.</span>
+                  <span class="text-xs text-muted">• Ankara</span>
+                </div>
+
+                <div class="text-sm text-muted">
+                  Klasik • <strong class="text-[var(--ts-primary)]">4.8</strong>
+                </div>
+
+                <div class="text-xs text-muted mt-2">
+                  Özel ders · Hafta içi pratik
+                </div>
+
+              </div>
+            </a>
+
+
+            <!-- add more dancers -->
+          </div>
+          <a routerLink="/danscilar" class="mt-4 inline-block text-sm text-[var(--ts-secondary)] hover:underline">Hepsini gör →</a>
+        </div>
+
+        <!-- WEEKLY SCHEDULE -->
+        <div class="card p-5 bg-white rounded-[1rem] shadow-sm">
+          <h3 class="text-lg font-bold mb-4" style="color:var(--ts-primary)">Haftalık Milonga Takvimi</h3>
+
+          <ul class="space-y-4">
+            <!-- PAZARTESİ -->
+            <li>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Pazartesi</div>
+                  <div class="text-xs text-muted">Milonga Maya</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-extrabold text-[var(--ts-primary)]">4.5</div>
+                  <button class="btn btn-sm btn-ghost mt-1">Detaylar</button>
+                </div>
+              </div>
+            </li>
+
+            <!-- SALI -->
+            <li>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Salı</div>
+                  <div class="text-xs text-muted">La Milonga Urbana • 19:30 - 22:30</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-extrabold text-[var(--ts-primary)]">4.7</div>
+                  <button class="btn btn-sm btn-ghost mt-1">Detaylar</button>
+                </div>
+              </div>
+            </li>
+
+            <!-- ÇARŞAMBA -->
+            <li>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Çarşamba</div>
+                  <div class="text-xs text-muted">Milonga Sueno Bosco • 21:00 - 00:00</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-extrabold text-[var(--ts-primary)]">4.8</div>
+                  <button class="btn btn-sm btn-ghost mt-1">Detaylar</button>
+                </div>
+              </div>
+            </li>
+
+            <!-- PERŞEMBE -->
+            <li>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Perşembe</div>
+                  <div class="text-xs text-muted">Milonga Central • 20:00 - 23:00</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-extrabold text-[var(--ts-primary)]">4.6</div>
+                  <button class="btn btn-sm btn-ghost mt-1">Detaylar</button>
+                </div>
+              </div>
+            </li>
+
+            <!-- CUMA (ÇOKLU ETKİNLİK) -->
+            <li>
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                  <div class="font-medium">Cuma</div>
+
+                  <div class="mt-2 space-y-2">
+                    <!-- Event 1 -->
+                    <div class="flex items-center justify-between p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+                      <div>
+                        <div class="font-semibold">Red Room Milonga</div>
+                        <div class="text-xs text-muted">21:00 - 02:00 • Red Room</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-lg font-bold text-[var(--ts-primary)]">4.9</div>
+                        <button class="btn btn-xs btn-ghost mt-1">Detaylar</button>
+                      </div>
+                    </div>
+
+                    <!-- Event 2 -->
+                    <div class="flex items-center justify-between p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+                      <div>
+                        <div class="font-semibold">After-Party: Tango House</div>
+                        <div class="text-xs text-muted">02:30 - 04:00 • Klub X</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-lg font-bold text-[var(--ts-primary)]">4.3</div>
+                        <button class="btn btn-xs btn-ghost mt-1">Detaylar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- CUMARTESİ (ÇOKLU ETKİNLİK) -->
+            <li>
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                  <div class="font-medium">Cumartesi</div>
+
+                  <div class="mt-2 space-y-2">
+                    <!-- Event 1 -->
+                    <div class="flex items-center justify-between p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+                      <div>
+                        <div class="font-semibold">Weekend Tango Fest</div>
+                        <div class="text-xs text-muted">18:00 - 01:00 • Festival Alanı</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-lg font-bold text-[var(--ts-primary)]">4.8</div>
+                        <button class="btn btn-xs btn-ghost mt-1">Detaylar</button>
+                      </div>
+                    </div>
+
+                    <!-- Event 2 -->
+                    <div class="flex items-center justify-between p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+                      <div>
+                        <div class="font-semibold">Milonga Luna</div>
+                        <div class="text-xs text-muted">20:00 - 00:00 • Luna Salon</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-lg font-bold text-[var(--ts-primary)]">4.6</div>
+                        <button class="btn btn-xs btn-ghost mt-1">Detaylar</button>
+                      </div>
+                    </div>
+
+                    <!-- Event 3 -->
+                    <div class="flex items-center justify-between p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+                      <div>
+                        <div class="font-semibold">Práctica Sabado</div>
+                        <div class="text-xs text-muted">16:00 - 18:00 • Stüdyo B</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-lg font-bold text-[var(--ts-primary)]">4.4</div>
+                        <button class="btn btn-xs btn-ghost mt-1">Detaylar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- PAZAR -->
+            <li>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Pazar</div>
+                  <div class="text-xs text-muted">Milonga Sunday • 17:00 - 20:00</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-extrabold text-[var(--ts-primary)]">4.7</div>
+                  <button class="btn btn-sm btn-ghost mt-1">Detaylar</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+
+        <!-- SCHOOLS -->
+        <div class="card p-5 bg-white rounded-[1rem] shadow-sm">
+          <h3 class="text-lg font-bold mb-4" style="color:var(--ts-primary)">Ankara'daki Tango Okulları</h3>
+
+          <div class="space-y-4">
+            <!-- 1 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=20" class="w-12 h-12 rounded-full" alt="TangoAnka"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">TangoAnka Akademi</div>
+                    <div class="text-xs text-muted">Kızılay • Tango Salon</div>
+                    <p class="text-sm text-muted mt-1">Haftalık dersler, başlangıç ve ileri gruplar. Pratikler ve milonga akışı güçlü.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.8</div>
+                    <a routerLink="/okullar/tangoanka-akademi" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Selin, Can</div>
+              </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=15" class="w-12 h-12 rounded-full" alt="Capital Tango"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">Capital Tango Studio</div>
+                    <div class="text-xs text-muted">Bahçelievler • Tango Nuevo</div>
+                    <p class="text-sm text-muted mt-1">Modern teknikler, özel atölyeler ve performans odaklı eğitimler.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.9</div>
+                    <a routerLink="/okullar/capital-tango" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Yalçın, Berkil</div>
+              </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=27" class="w-12 h-12 rounded-full" alt="El Tango Centro"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">El Tango Centro</div>
+                    <div class="text-xs text-muted">Çankaya • Klasik Tango</div>
+                    <p class="text-sm text-muted mt-1">Geniş eğitmen kadrosu, grup dersleri ve sosyal etkinliklerle dolu program.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.7</div>
+                    <a routerLink="/okullar/el-tango-centro" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Marta, Diego</div>
+              </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=33" class="w-12 h-12 rounded-full" alt="Milonga Studio"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">Milonga Studio</div>
+                    <div class="text-xs text-muted">Sıhhiye • Milonga & Práctica</div>
+                    <p class="text-sm text-muted mt-1">Akşam milongaları ve pratik saatleriyle popüler; sosyal ağı güçlü.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.8</div>
+                    <a routerLink="/okullar/milonga-studio" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Leyla, Omar</div>
+              </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=44" class="w-12 h-12 rounded-full" alt="Paso Fino"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">Paso Fino Academy</div>
+                    <div class="text-xs text-muted">Kavaklıdere • Teknik & Taktik</div>
+                    <p class="text-sm text-muted mt-1">Teknik odaklı atölyeler, koreografi ve sosyal dans dengesi.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.6</div>
+                    <a routerLink="/okullar/paso-fino" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Arda, Nil</div>
+              </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="flex items-start gap-3 p-3 rounded-md border border-[rgba(15,23,36,0.04)]">
+              <img src="https://i.pravatar.cc/80?img=50" class="w-12 h-12 rounded-full" alt="Casa del Tango"/>
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">Casa del Tango</div>
+                    <div class="text-xs text-muted">Tunali • Performans & Masterclass</div>
+                    <p class="text-sm text-muted mt-1">Masterclass'lar ve gösteri hazırlıklarıyla bilinen, deneyimli hoca kadrosu.</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-extrabold text-[var(--ts-primary)]">4.9</div>
+                    <a routerLink="/okullar/casa-del-tango" class="btn btn-sm btn-ghost mt-2">Detaylar</a>
+                  </div>
+                </div>
+                <div class="text-xs text-muted mt-2">Eğitmenler: Marco, Selma</div>
+              </div>
+            </div>
+
+          </div>
+
+          <a routerLink="/okullar" class="mt-4 inline-block text-sm text-[var(--ts-secondary)] hover:underline">Tüm okulları gör →</a>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Modal toggle input (modal açma/kapatma kontrolü) -->
+<input type="checkbox" id="my_modal_7" class="modal-toggle" />
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle" aria-describedby="shareModalDesc">
+  <div class="modal-box max-w-lg max-h-[70vh] relative flex flex-col rounded-lg shadow-lg bg-white p-6">
+
+    <h3 id="shareModalTitle" class="font-bold text-lg mb-4">Arkadaşlarına Paylaş</h3>
+
+    <input
+      type="text"
+      placeholder="Arkadaş ara..."
+      class="input input-bordered w-full mb-4 rounded-md"
+      id="friend-search" />
+
+    <!-- Liste kapsayıcı: max yüksekliği ve scroll -->
+    <ul class="list bg-base-100 rounded-box shadow-inner flex-grow overflow-y-auto mb-4">
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Dio Lupa"/></div>
+        <div>
+          <div class="font-semibold">Dio Lupa</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Dio Lupa ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="Ellie Beilish"/></div>
+        <div>
+          <div class="font-semibold">Ellie Beilish</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Bears of a fever</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Ellie Beilish ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/3@94.webp" alt="Sabrino Gardener"/></div>
+        <div>
+          <div class="font-semibold">Sabrino Gardener</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Sabrino Gardener ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <!-- Daha fazla eleman için örnek satır -->
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/3@94.webp" alt="Sabrino Gardener"/></div>
+        <div>
+          <div class="font-semibold">Sabrino Gardener</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Sabrino Gardener ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Dio Lupa"/></div>
+        <div>
+          <div class="font-semibold">Dio Lupa</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Dio Lupa ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="Ellie Beilish"/></div>
+        <div>
+          <div class="font-semibold">Ellie Beilish</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Bears of a fever</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Ellie Beilish ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/3@94.webp" alt="Sabrino Gardener"/></div>
+        <div>
+          <div class="font-semibold">Sabrino Gardener</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Sabrino Gardener ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/1@94.webp" alt="Dio Lupa"/></div>
+        <div>
+          <div class="font-semibold">Dio Lupa</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Dio Lupa ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="Ellie Beilish"/></div>
+        <div>
+          <div class="font-semibold">Ellie Beilish</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Bears of a fever</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Ellie Beilish ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+      <li class="list-row hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+        <div><img class="w-10 h-10 rounded-full" src="https://img.daisyui.com/images/profile/demo/3@94.webp" alt="Sabrino Gardener"/></div>
+        <div>
+          <div class="font-semibold">Sabrino Gardener</div>
+          <div class="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
+        </div>
+        <button class="btn btn-square btn-ghost" aria-label="Paylaş Sabrino Gardener ile">
+          <i class="fa-solid fa-share-nodes fa-lg text-primary"></i>
+        </button>
+      </li>
+
+
+    </ul>
+
+    <!-- Kapatma butonu: hep aşağıda sabit -->
+    <div class="modal-action sticky bottom-0 bg-white pt-3 -mx-6 -mb-6 border-t border-gray-200">
+      <label for="my_modal_7" class="btn cursor-pointer w-full">Kapat</label>
+    </div>
+
+  </div>
+  <label class="modal-backdrop" for="my_modal_7" aria-label="Close modal"></label>
+</div>

@@ -1,0 +1,229 @@
+<section class="py-12 px-4 bg-[var(--ts-bg)] text-[var(--ts-text)]" style="margin-top:6rem">
+  <div class="max-w-screen-lg mx-auto">
+
+    <!-- Header / Hero -->
+    <div class="card p-6 mb-6 bg-[var(--ts-surface)]">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div class="flex-1">
+          <h1 class="text-3xl md:text-4xl font-extrabold" style="color:var(--ts-primary)">Yardım Merkezi</h1>
+          <p class="text-muted mt-2 max-w-2xl">
+            Sorun mu var? Hızlı çözümler, rehberler ve destek kanalları burada. Aramayı dene veya doğrudan bir destek talebi oluştur.
+          </p>
+        </div>
+
+        <div class="w-full md:w-96">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-muted"></i>
+            <input type="search" [(ngModel)]="q" (ngModelChange)="applyFilters()" placeholder="Ne hakkında yardıma ihtiyacın var? (ör: giriş, ödeme, profil...)"
+                   class="input input-bordered w-full pl-10" aria-label="Yardım ara" />
+          </div>
+
+          <div class="mt-3 flex gap-2">
+            <button class="ts-btn ts-btn-primary flex-1" (click)="quickSearch('giriş')">Giriş Sorunları</button>
+            <button class="ts-btn ts-btn-event" (click)="quickSearch('ödeme')">Ödeme</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid: sol filtre + sağ içerik -->
+    <div class="grid md:grid-cols-4 gap-6">
+      <!-- LEFT: Kategori & Hızlı Linkler -->
+      <aside class="md:col-span-1 space-y-4">
+        <div class="card p-4">
+          <h3 class="font-semibold mb-3">Kategoriler</h3>
+          <div class="flex flex-col gap-2">
+            <button *ngFor="let c of categories" (click)="toggleCategory(c)" [ngClass]="selectedCategory===c ? 'badge badge-primary' : 'badge badge-outline'" class="text-left">
+              {{ c }}
+            </button>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <h3 class="font-semibold mb-3">Hızlı Linkler</h3>
+          <ul class="space-y-2 text-sm text-[var(--ts-muted)]">
+            <li><a (click)="openArticleBySlug('giris-problemleri')" class="hover:underline text-[var(--ts-primary)] cursor-pointer">Giriş & Hesap Erişimi</a></li>
+            <li><a (click)="openArticleBySlug('odeme-ve-iptal')" class="hover:underline text-[var(--ts-primary)] cursor-pointer">Ödeme, İade & Fatura</a></li>
+            <li><a (click)="openArticleBySlug('profil-duzenleme')" class="hover:underline text-[var(--ts-primary)] cursor-pointer">Profil & Fotoğraf</a></li>
+            <li><a routerLink="/ssb" class="hover:underline">Sık Sorulan Sorular (SSS)</a></li>
+          </ul>
+        </div>
+
+        <div class="card p-4">
+          <h3 class="font-semibold mb-3">Destek Kanalları</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-envelope text-rose-600 w-5"></i>
+              <div>
+                <div class="font-semibold">E-posta</div>
+                <div class="text-xs text-[var(--ts-muted)]">support@tangosocial.com</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-phone text-secondary w-5"></i>
+              <div>
+                <div class="font-semibold">Telefon</div>
+                <div class="text-xs text-[var(--ts-muted)]">+90 555 123 4567 (09:00–18:00)</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-comments text-accent w-5"></i>
+              <div>
+                <div class="font-semibold">Canlı Sohbet</div>
+                <div class="text-xs text-[var(--ts-muted)]">Çevrim içi saatlerde yanıt verilir</div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <button class="ts-btn ts-btn-primary w-full" (click)="openTicketForm()">Yeni Talep Oluştur</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN: Makaleler / SSS / Adım adım rehber -->
+      <main class="md:col-span-3 space-y-6">
+
+        <!-- Status / Announcements -->
+        <div *ngIf="announcement" class="card p-4 bg-[var(--ts-accent)] text-[var(--ts-text)]">
+          <div class="flex items-start gap-4">
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+            <div>
+              <div class="font-semibold">Duyuru: {{ announcement.title }}</div>
+              <div class="text-sm">{{ announcement.body }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Guides -->
+        <section>
+          <h2 class="text-xl font-bold mb-3">Öne Çıkan Rehberler</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            <article *ngFor="let f of featured" class="card p-3 hover:shadow-lg transition">
+              <div class="flex flex-col h-full">
+                <div class="text-xs text-muted mb-1">{{ f.category }} • {{ f.readTime }}</div>
+                <h3 class="font-semibold mb-2">{{ f.title }}</h3>
+                <p class="text-sm text-[var(--ts-muted)] line-clamp-3 flex-1">{{ f.excerpt }}</p>
+                <div class="mt-3 flex items-center gap-2">
+                  <img [src]="f.authorAvatar" alt="" class="w-8 h-8 rounded-full" />
+                  <div class="text-xs">
+                    <div class="font-semibold">{{ f.author }}</div>
+                    <div class="text-muted">{{ f.date | date:'shortDate' }}</div>
+                  </div>
+                  <div class="ml-auto">
+                    <button class="ts-btn ts-btn-primary btn-xs" (click)="openArticle(f.id)">Oku</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Arama Sonuçları / Makaleler Listesi -->
+        <section>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xl font-bold">Makale & Rehberler</h2>
+            <div class="text-sm text-muted">{{ filteredArticles.length }} sonuç</div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <article *ngFor="let a of filteredArticles" class="card p-4 flex flex-col">
+              <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-md overflow-hidden bg-[var(--ts-surface)]">
+                  <img *ngIf="a.imageUrl" [src]="a.imageUrl" alt="" class="w-full h-full object-cover" />
+                  <div *ngIf="!a.imageUrl" class="w-full h-full flex items-center justify-center text-muted font-semibold">TXT</div>
+                </div>
+
+                <div class="flex-1">
+                  <div class="text-xs text-muted mb-1">{{ a.category }} • {{ a.readTime }}</div>
+                  <h3 class="font-semibold">{{ a.title }}</h3>
+                  <p class="text-sm text-[var(--ts-muted)] line-clamp-2">{{ a.excerpt }}</p>
+                  <div class="mt-3 flex items-center gap-2">
+                    <button class="ts-btn btn-ghost btn-xs" (click)="openArticle(a.id)">Oku</button>
+                    <div class="text-xs text-muted ml-auto">{{ a.updatedAt | date:'short' }}</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="flex justify-center mt-4">
+            <button class="ts-btn ts-btn-primary" *ngIf="!allLoaded" (click)="loadMore()">Daha Fazla Yükle</button>
+            <div *ngIf="allLoaded" class="text-muted">Tüm makaleler yüklendi.</div>
+          </div>
+        </section>
+
+        <!-- SSS (Accordion) -->
+        <section>
+          <h2 class="text-xl font-bold mb-3">Sık Sorulan Sorular</h2>
+          <div class="space-y-2">
+            <div class="collapse collapse-arrow" *ngFor="let f of faqs">
+              <input type="checkbox" />
+              <div class="collapse-title font-medium">{{ f.q }}</div>
+              <div class="collapse-content text-sm text-[var(--ts-muted)]">{{ f.a }}</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Adım Adım: Hızlı Çözüm Kartları -->
+        <section>
+          <h2 class="text-xl font-bold mb-3">Hızlı Çözümler</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="card p-4">
+              <h3 class="font-semibold mb-2">Giriş Sorunları</h3>
+              <ol class="list-decimal pl-5 text-sm text-[var(--ts-muted)]">
+                <li>Şifre sıfırlama bağlantısını kullan — e-posta gelmezse spam klasörünü kontrol et.</li>
+                <li>Hala erişemiyorsan destek talebi oluştur.</li>
+              </ol>
+            </div>
+            <div class="card p-4">
+              <h3 class="font-semibold mb-2">Ödeme & İade</h3>
+              <ol class="list-decimal pl-5 text-sm text-[var(--ts-muted)]">
+                <li>Satın alma geçmişini kontrol et.</li>
+                <li>İade politikamız 14 gün içinde geçerlidir.</li>
+              </ol>
+            </div>
+            <div class="card p-4">
+              <h3 class="font-semibold mb-2">Profil Fotoğrafı</h3>
+              <ol class="list-decimal pl-5 text-sm text-[var(--ts-muted)]">
+                <li>Kare, yüksek kontrastlı ve yüzünüz görünür olmalı.</li>
+                <li>Boyut önerisi: 500×500 px.</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- DESTEK TALEP MODAL (basit) -->
+  <div *ngIf="showTicket" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/40" (click)="closeTicket()"></div>
+    <div class="card p-6 z-10 w-full max-w-xl">
+      <h3 class="text-xl font-semibold mb-3">Yeni Destek Talebi</h3>
+
+      <div class="space-y-3">
+        <label class="label"><span class="label-text">Konu</span></label>
+        <input [(ngModel)]="ticket.subject" class="input input-bordered w-full" />
+
+        <label class="label"><span class="label-text">Kategori</span></label>
+        <select [(ngModel)]="ticket.category" class="select select-bordered w-full">
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+
+        <label class="label"><span class="label-text">Ayrıntılar</span></label>
+        <textarea [(ngModel)]="ticket.body" rows="4" class="textarea textarea-bordered w-full"></textarea>
+
+        <div class="flex items-center gap-3">
+          <button class="ts-btn ts-btn-primary" (click)="submitTicket()">Gönder</button>
+          <button class="ts-btn ts-btn-ghost" (click)="closeTicket()">İptal</button>
+        </div>
+
+        <div *ngIf="ticketMsg" class="text-sm text-[var(--ts-muted)]">{{ ticketMsg }}</div>
+      </div>
+    </div>
+  </div>
+</section>

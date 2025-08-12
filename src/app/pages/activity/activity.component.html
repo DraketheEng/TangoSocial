@@ -1,0 +1,349 @@
+<section class="min-h-screen bg-[var(--ts-bg)] px-4 py-10" style="margin-top: 5rem">
+  <div class="max-w-screen-xl mx-auto">
+    <div class="grid lg:grid-cols-4 gap-8">
+      <aside class="lg:col-span-1">
+        <div class="lg:sticky top-24">
+          <h2 class="text-xl font-bold mb-4">Etkinlikleri Filtrele</h2>
+          <div class="space-y-6">
+            <div class="form-control w-full">
+              <label class="label pb-1"><span class="label-text font-semibold">Ne Arıyorsun?</span></label>
+              <input
+                type="text"
+                [(ngModel)]="filters.q"
+                placeholder="Eğitmen, şehir, mekan..."
+                class="input input-bordered w-full bg-white"
+              />
+            </div>
+
+            <div>
+              <h3 class="font-semibold mb-2">Etkinlik Türü</h3>
+              <div class="space-y-2">
+                <button
+                  type="button"
+                  class="flex items-center justify-between p-2 rounded-lg w-full"
+                  [ngClass]="{'bg-[var(--ts-primary)] text-white font-bold': filters.type === 'all'}"
+                  (click)="setType('all')"
+                >
+                  <span>Tümü</span>
+                  <span class="badge badge-ghost">128</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="flex items-center justify-between p-2 rounded-lg w-full hover:bg-gray-100"
+                  [ngClass]="{'font-bold': filters.type === 'milonga'}"
+                  (click)="setType('milonga')"
+                >
+                  <span>Milonga</span>
+                  <span class="badge badge-ghost">72</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="flex items-center justify-between p-2 rounded-lg w-full hover:bg-gray-100"
+                  [ngClass]="{'font-bold': filters.type === 'workshop'}"
+                  (click)="setType('workshop')"
+                >
+                  <span>Workshop</span>
+                  <span class="badge badge-ghost">31</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="flex items-center justify-between p-2 rounded-lg w-full hover:bg-gray-100"
+                  [ngClass]="{'font-bold': filters.type === 'pratik'}"
+                  (click)="setType('pratik')"
+                >
+                  <span>Pratik</span>
+                  <span class="badge badge-ghost">15</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="flex items-center justify-between p-2 rounded-lg w-full hover:bg-gray-100"
+                  [ngClass]="{'font-bold': filters.type === 'festival'}"
+                  (click)="setType('festival')"
+                >
+                  <span>Festival</span>
+                  <span class="badge badge-ghost">10</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label pb-1"><span class="label-text font-semibold">Tarih</span></label>
+              <input type="date" [(ngModel)]="filters.date" class="input input-bordered w-full bg-white"/>
+            </div>
+
+            <div>
+              <h3 class="font-semibold mb-2">Seviye</h3>
+              <div class="flex flex-wrap gap-2">
+                <div
+                  class="badge badge-outline p-3 cursor-pointer hover:bg-gray-200"
+                  [ngClass]="{'badge-primary': filters.level === 'all'}"
+                  (click)="setLevel('all')"
+                >
+                  Tüm Seviyeler
+                </div>
+                <div
+                  class="badge badge-outline p-3 cursor-pointer hover:bg-gray-200"
+                  [ngClass]="{'badge-primary': filters.level === 'beginner'}"
+                  (click)="setLevel('beginner')"
+                >
+                  Başlangıç
+                </div>
+                <div
+                  class="badge badge-outline p-3 cursor-pointer hover:bg-gray-200"
+                  [ngClass]="{'badge-primary': filters.level === 'intermediate'}"
+                  (click)="setLevel('intermediate')"
+                >
+                  Orta
+                </div>
+                <div
+                  class="badge badge-outline p-3 cursor-pointer hover:bg-gray-200"
+                  [ngClass]="{'badge-primary': filters.level === 'advanced'}"
+                  (click)="setLevel('advanced')"
+                >
+                  İleri
+                </div>
+              </div>
+            </div>
+
+            <button class="ts-btn ts-btn-primary w-full py-3" (click)="applyFilters()">Filtreleri Uygula</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="lg:col-span-3">
+        <div class="mb-8">
+          <h1 class="text-4xl md:text-5xl font-extrabold text-[color:var(--ts-text)] mb-2">Etkinlik Merkezi</h1>
+          <p class="text-[color:var(--ts-muted)]">Ritmi kaçırma, şehrindeki en iyi etkinlikleri keşfet!</p>
+        </div>
+
+        <div role="tablist" class="tabs tabs-boxed bg-white w-full md:w-fit mb-8 z-40">
+          <button role="tab" class="tab" [class.tab-active]="activeTab === 'liste'" (click)="setActiveTab('liste')"
+                  [attr.aria-selected]="activeTab === 'liste'">
+            <i class="fa-solid fa-list mr-2"></i>Liste Görünümü
+          </button>
+
+          <button role="tab" class="tab" [class.tab-active]="activeTab === 'takvim'" (click)="setActiveTab('takvim')"
+                  [attr.aria-selected]="activeTab === 'takvim'">
+            <i class="fa-solid fa-calendar-days mr-2"></i>Takvim
+          </button>
+
+          <button role="tab" class="tab" [class.tab-active]="activeTab === 'harita'" (click)="setActiveTab('harita')"
+                  [attr.aria-selected]="activeTab === 'harita'">
+            <i class="fa-solid fa-map-location-dot mr-2"></i>Harita
+          </button>
+        </div>
+
+        <div id="tab-contents">
+          <!-- LİSTE -->
+          <div *ngIf="activeTab === 'liste'">
+
+            <div *ngIf="featuredEvent" class="card lg:card-side tango-card bg-base-100 shadow-xl mb-10 overflow-hidden">
+              <figure class="lg:w-1/2">
+                <img
+                  [src]="featuredEvent.image"
+                  [alt]="featuredEvent.title"
+                  class="h-full w-full object-cover"
+                />
+              </figure>
+              <div class="card-body lg:w-1/2">
+                <div class="badge badge-accent font-bold text-white">KAÇIRMA!</div>
+                <h2 class="card-title text-3xl font-extrabold text-[color:var(--ts-primary)]">
+                  {{ featuredEvent.title }}
+                </h2>
+                <p class="text-[color:var(--ts-muted)]">
+                  Dünyaca ünlü maestrolar, 4 gün sürecek milongalar ve unutulmaz anlar için yerini ayırt.
+                  Türkiye'nin en büyük tango buluşması!
+                </p>
+                <div class="flex items-center gap-4 text-sm mt-2">
+                  <span><i class="fa-solid fa-calendar-alt mr-1"></i> {{ featuredEvent.date | date:'d MMM - yyyy' }}</span>
+                  <span><i class="fa-solid fa-map-marker-alt mr-1"></i> {{ featuredEvent.venue }}, {{ featuredEvent.city }}</span>
+                </div>
+                <div *ngIf="featuredEvent.organizer" class="flex items-center gap-4 text-sm mt-2">
+                  <span><i class="fa-solid fa-house-user mr-1"></i> {{ featuredEvent.organizer }}</span>
+                </div>
+                <div class="card-actions justify-start mt-4">
+                  <button class="ts-btn ts-btn-primary px-6">Detayları İncele</button>
+                </div>
+              </div>
+            </div>
+
+
+            <h3 class="text-2xl font-bold mb-6 text-[color:var(--ts-text)]">Yaklaşan Etkinlikler</h3>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div *ngFor="let e of nonFeaturedEvents" class="tango-card flex flex-col bg-[var(--ts-surface)]"
+                   [ngClass]="{'opacity-70': e.past}">
+                <figure class="relative">
+                  <img [src]="e.image" [alt]="e.title" class="h-48 w-full object-cover" [class.filter-grayscale]="e.past"/>
+
+                  <!-- Badge Popüler -->
+                  <div *ngIf="e.popular" class="badge badge-error gap-2 absolute top-3 right-3 font-bold text-white">
+                    <i class="fa-solid fa-fire-flame-curved"></i> POPÜLER
+                  </div>
+
+                  <!-- Badge Son Yerler -->
+                  <div *ngIf="e.lastSeats" class="badge badge-warning gap-2 absolute top-3 right-3 font-bold">
+                    <i class="fa-solid fa-hourglass-half"></i> TÜKENMEK ÜZERE
+                  </div>
+
+                  <!-- Badge Kontenjan Dolu -->
+                  <div *ngIf="e.full" class="badge badge-neutral gap-2 absolute top-3 right-3 font-bold">
+                    <i class="fa-solid fa-circle-xmark"></i> KONTENJAN DOLU
+                  </div>
+
+                  <!-- Badge Geçmiş Etkinlik -->
+                  <div *ngIf="e.past" class="badge badge-neutral gap-2 absolute top-3 right-3 font-bold">
+                    <i class="fa-solid fa-check"></i> GEÇMİŞ ETKİNLİK
+                  </div>
+                </figure>
+
+                <div class="p-5 flex flex-col flex-grow">
+                  <div class="flex justify-between items-start mb-2">
+                    <div>
+                      <div class="badge" [ngClass]="{
+          'badge-secondary': e.type === 'milonga',
+          'badge-info text-white': e.type === 'workshop',
+          'badge-success text-white': e.type === 'pratik'
+        }">
+                        {{ e.type | titlecase }}
+                      </div>
+                      <p class="text-sm font-bold text-gray-700 mt-1">{{ e.title }}</p>
+                      <p class="text-xs text-[color:var(--ts-muted)]">{{ e.venue }}, {{ e.city }}</p>
+                    </div>
+                    <button class="btn btn-ghost btn-circle btn-sm" (click)="toggleBookmark(e)">
+                      <i class="fa-regular fa-bookmark text-xl"></i>
+                    </button>
+                  </div>
+
+                  <div class="text-xs text-gray-500 space-y-1 mb-4">
+                    <p><i class="fa-solid fa-calendar-day w-4"></i> {{ e.date | date:'d MMMM yyyy' }}</p>
+                    <p><i class="fa-regular fa-clock w-4"></i> {{ e.time }}</p>
+                  </div>
+
+                  <div class="text-xs text-gray-600 mb-4">
+                    <!-- Milonga ise DJ listesi -->
+                    <ng-container *ngIf="e.type === 'milonga' && e.dj?.length">
+                      <p>
+                        <i class="fa-solid fa-headphones mr-1"></i>
+                        <strong>DJ:</strong> {{ e.dj?.join(', ') }}
+                      </p>
+                    </ng-container>
+
+                    <!-- Workshop ise Eğitmenler -->
+                    <ng-container *ngIf="e.type === 'workshop' && e.instructors?.length">
+                      <p>
+                        <i class="fa-solid fa-chalkboard-teacher mr-1"></i>
+                        <strong>Eğitmenler:</strong> {{ e.instructors?.join(', ') }}
+                      </p>
+                    </ng-container>
+
+                    <!-- Pratik ise Okul -->
+                    <ng-container *ngIf="e.type === 'pratik' && e.school">
+                      <p>
+                        <i class="fa-solid fa-school mr-1"></i>
+                        <strong>Okul:</strong> {{ e.school }}
+                      </p>
+                    </ng-container>
+
+                    <!-- Festival ise Organizasyon -->
+                    <ng-container *ngIf="e.type === 'festival' && e.organizer">
+                      <p>
+                        <i class="fa-solid fa-users mr-1"></i>
+                        <strong>Organizatör:</strong> {{ e.organizer }}
+                      </p>
+                    </ng-container>
+                  </div>
+
+                  <div class="mt-auto">
+                    <button *ngIf="!e.past" class="btn ts-btn-accent w-full" [disabled]="e.full">
+                      {{ e.full ? 'Kontenjan Dolu' : 'Rezervasyon Yap' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="text-center mt-12">
+              <button class="btn btn-lg btn-outline">Daha Fazla Etkinlik Yükle</button>
+            </div>
+
+            <div *ngIf="filteredEvents.length === 0" class="mt-6 text-center text-gray-500">Filtrelerinize uygun
+              etkinlik bulunamadı.
+            </div>
+          </div>
+
+          <!-- TAKVİM -->
+          <div *ngIf="activeTab === 'takvim'">
+            <div class="tango-card bg-white p-4">
+              <div class="flex items-center justify-between mb-4">
+                <button class="btn btn-ghost btn-sm" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <h3 class="text-xl font-bold">{{ currentMonth | date:'MMMM yyyy' }}</h3>
+                <button class="btn btn-ghost btn-sm" (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+              <!-- Basit takvim ızgarası (sadece görsel) -->
+              <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-500 border-b pb-2 mb-2">
+                <div>Pzt</div>
+                <div>Sal</div>
+                <div>Çar</div>
+                <div>Per</div>
+                <div>Cum</div>
+                <div>Cmt</div>
+                <div>Paz</div>
+              </div>
+              <div class="grid grid-cols-7 gap-1">
+                <div *ngFor="let d of calendarDays" class="p-2 h-24 border rounded-lg"
+                     [ngClass]="{'bg-yellow-50': dayHasEvents(d)}">
+                  <div class="text-sm">{{ d.getDate() }}</div>
+                  <div *ngFor="let ev of eventsOnDay(d)" class="mt-1">
+                    <div class="tooltip" [attr.data-tip]="ev.title">
+                      <div class="badge badge-xs" [ngClass]="badgeForType(ev.type)"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HARİTA -->
+          <div *ngIf="activeTab === 'harita'">
+            <div class="grid md:grid-cols-3 gap-4 h-[75vh]">
+              <div class="md:col-span-1 tango-card bg-white p-2 overflow-y-auto">
+                <h3 class="font-bold p-2">Haritadaki Etkinlikler ({{ events.length }})</h3>
+                <div class="space-y-2">
+                  <div *ngFor="let e of events" class="p-2 rounded-lg border hover:bg-gray-100 cursor-pointer"
+                       (click)="focusMapOn(e)">
+                    <p class="font-bold text-sm">{{ e.title }}</p>
+                    <p class="text-xs text-gray-500">{{ e.venue }}, {{ e.city }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="md:col-span-2 tango-card bg-gray-300 overflow-hidden">
+                <!-- iframe için safe URL, veya real google-maps component ile değiştir -->
+
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24435.59338172948!2d32.82962083366418!3d39.90778397546062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d3466c8749f6f7%3A0x3a51395d9d58a8de!2sSıhhiye%2C%20Ankara!5e0!3m2!1str!2str!4v1691872300000!5m2!1str!2str"
+                  width="100%"
+                  height="100%"
+                  style="border:0;"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>

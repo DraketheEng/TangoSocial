@@ -1,0 +1,174 @@
+<section class="py-12 px-4 bg-base-100 text-gray-800 mt-10">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Başlık -->
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-[var(--ts-primary)] mb-3">Tango Okulları</h1>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+        Şehrindeki tango okullarını, puanlarını, konumlarını ve sundukları programları keşfet.
+      </p>
+    </div>
+
+    <!-- Grid: soldan sağa - ortada vurgulu -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+
+      <!-- Card A (sol) -->
+      <a routerLink="/okullar/el-tango-centro" class="block group">
+        <article class="card bg-white shadow-md hover:shadow-xl transition-all duration-300 rounded-lg overflow-hidden">
+          <figure class="h-48 overflow-hidden">
+            <img loading="lazy" alt="El Tango Centro - salon" src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"/>
+          </figure>
+
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h2 class="text-xl font-bold text-[var(--ts-primary)] leading-tight">El Tango Centro</h2>
+                <p class="text-sm text-gray-500">Çankaya · Tunus Cad. No:81</p>
+              </div>
+              <div class="text-right">
+                <div class="inline-flex items-center gap-1 text-yellow-400 font-semibold">
+                  <i class="fa-solid fa-star"></i><span class="text-lg">4.6</span>
+                </div>
+                <div class="text-xs text-gray-400"> (74 yorum)</div>
+              </div>
+            </div>
+
+            <div class="mt-3 text-sm text-gray-700">
+              Eğitmenler: <strong>Barış &amp; Seda</strong>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mt-4 text-sm text-gray-600">
+              <div class="bg-gray-50 rounded-lg p-2">
+                <div class="font-medium text-gray-800">320+ Öğrenci</div>
+                <div class="text-xs text-gray-500">Aktif dansçı</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-2">
+                <div class="font-medium text-gray-800">Hafta İçi Pratik</div>
+                <div class="text-xs text-gray-500">Salı &amp; Perş.</div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between">
+              <a routerLink="/okullar/el-tango-centro" class="btn btn-sm btn-secondary" aria-label="El Tango Centro sayfasına git">Okul Sayfası</a>
+              <a href="https://maps.google.com/?q=El+Tango+Centro+Ankara" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[var(--ts-primary)]">Yol Tarifi</a>
+            </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card B (orta - vurgulu) -->
+      <a routerLink="/okullar/capital-tango" class="block">
+        <article
+          class="relative bg-white rounded-lg overflow-hidden shadow-2xl border-4 border-[var(--ts-primary)] transform md:row-span-2 md:scale-105 md:-translate-y-3 transition-all duration-300">
+          <figure class="h-56 overflow-hidden">
+            <img loading="lazy" alt="Capital Tango - gösteri" src="https://scontent.fesb10-2.fna.fbcdn.net/v/t39.30808-6/305169702_496598735803269_4320544607253954484_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=YTzD4x7GY80Q7kNvwGfQbB2&_nc_oc=AdnTNyReB8LzLbZbLq24ZDI2vnLJd3IiPArq__saPv56rm5hpFJ2t_5Iiql2INNJ3Es&_nc_zt=23&_nc_ht=scontent.fesb10-2.fna&_nc_gid=_AVMCqnchPi0auV5jnj5dw&oh=00_AfUdF3qNZL7YlCRF9KNWMBI3YN8uHdr1-BM1azaIxDxfwQ&oe=689EE6F0" class="w-full h-full object-cover"/>
+          </figure>
+
+          <div class="p-6">
+            <!-- ribbon -->
+            <div class="absolute top-4 left-4 bg-[var(--ts-primary)] text-white rounded-full px-3 py-1 text-xs font-semibold shadow">
+              En Popüler
+            </div>
+
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h2 class="text-2xl font-extrabold text-[var(--ts-primary)]">Capital Tango</h2>
+                <p class="text-sm text-gray-500">Kızılay · Sakarya Cad. No:4</p>
+              </div>
+
+              <div class="text-right">
+                <div class="inline-flex items-center gap-1 text-yellow-400 font-extrabold text-2xl">
+                  <i class="fa-solid fa-star"></i><span>4.9</span>
+                </div>
+                <div class="text-xs text-gray-400"> (112 yorum)</div>
+              </div>
+            </div>
+
+            <div class="mt-3 text-sm text-gray-700">
+              Eğitmen: <strong>Öyküm Çayır</strong>
+            </div>
+
+            <div class="mt-4 p-3 bg-[rgba(255,61,107,0.06)] border-l-4 border-[var(--ts-primary)] rounded">
+              <p class="text-sm font-semibold text-[var(--ts-primary)]">📈 %98 memnuniyet — Öğrencilerimiz bizi seçiyor!</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-4 text-sm text-gray-700">
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="font-medium text-gray-900">400+ Öğrenci</div>
+                <div class="text-xs text-gray-500">Aktif katılımcı</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="font-medium text-gray-900">Cumartesi Milonga</div>
+                <div class="text-xs text-gray-500">22:00 - 03:00</div>
+              </div>
+
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="font-medium text-gray-900">Escenario Odaklı</div>
+                <div class="text-xs text-gray-500">Performans eğitimi</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="font-medium text-gray-900">5 Eğitmen</div>
+                <div class="text-xs text-gray-500">Deneyimli ekip</div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between">
+              <a routerLink="/okullar/capital-tango" class="btn btn-sm btn-secondary">Okul Sayfası</a>
+              <div class="flex items-center gap-2">
+                <a href="https://maps.google.com/?q=Capital+Tango+Ankara" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[var(--ts-primary)]">Yol Tarifi</a>
+                <button class="btn btn-sm btn-ghost" aria-label="Capital Tango paylaş">
+                  <i class="fa-solid fa-share-nodes"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card C (sağ) -->
+      <a routerLink="/okullar/tangoanka-akademi" class="block group">
+        <article class="card bg-white shadow-md hover:shadow-xl transition-all duration-300 rounded-lg overflow-hidden">
+          <figure class="h-48 overflow-hidden">
+            <img loading="lazy" alt="TangoAnka Akademi" src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"/>
+          </figure>
+
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h2 class="text-xl font-bold text-[var(--ts-primary)]">TangoAnka Akademi</h2>
+                <p class="text-sm text-gray-500">Kızılay · Atatürk Cad. No:21</p>
+              </div>
+              <div class="text-right">
+                <div class="inline-flex items-center gap-1 text-yellow-400 font-semibold">
+                  <i class="fa-solid fa-star"></i><span class="text-lg">4.8</span>
+                </div>
+                <div class="text-xs text-gray-400"> (89 yorum)</div>
+              </div>
+            </div>
+
+            <div class="mt-3 text-sm text-gray-700">
+              Eğitmen: <strong>Selin G.</strong>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mt-4 text-sm text-gray-600">
+              <div class="bg-gray-50 rounded-lg p-2">
+                <div class="font-medium text-gray-800">250+ Öğrenci</div>
+                <div class="text-xs text-gray-500">Aktif sınıflar</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-2">
+                <div class="font-medium text-gray-800">Hafta Sonu Atölye</div>
+                <div class="text-xs text-gray-500">Cumartesi</div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between">
+              <a routerLink="/okullar/tangoanka-akademi" class="btn btn-sm btn-secondary">Okul Sayfası</a>
+              <a href="https://maps.google.com/?q=TangoAnka+Akademi+Ankara" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[var(--ts-primary)]">Yol Tarifi</a>
+            </div>
+          </div>
+        </article>
+      </a>
+
+    </div>
+  </div>
+</section>

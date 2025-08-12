@@ -1,0 +1,47 @@
+:host { display: block; }
+
+/* Card polish (mevcut kuralları koru) */
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(15,23,36,0.06);
+  box-shadow: var(--ts-shadow-soft);
+}
+
+/* Tema uyumlu butonlar */
+.ts-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 font-semibold;
+  transition: transform 160ms cubic-bezier(.2,.9,.3,1), box-shadow 160ms;
+  border: none;
+}
+
+/* Primary (vurgulu) */
+.ts-btn-primary {
+  background: linear-gradient(90deg, var(--ts-primary), var(--ts-primary-600));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(229,57,94,0.12);
+}
+.ts-btn-primary:hover { transform: translateY(-2px); }
+
+/* Ghost (outline / subtle) */
+.ts-btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(15,23,36,0.06);
+  color: var(--ts-text);
+}
+
+/* Danger (kırmızı / sil / dondur vb.) */
+.ts-btn-danger {
+  background: linear-gradient(90deg, #ef4444, #dc2626); /* kırmızı degrade */
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(220,38,38,0.08);
+}
+.ts-btn-danger:hover { transform: translateY(-2px); }
+
+/* küçük responsive düzeltmeler */
+@media (max-width: 768px) {
+  .ts-btn { font-size: 0.9rem; padding: 0.5rem 0.75rem; }
+  .card { padding: 1rem; }
+}
+
+/* IMPORTANT: sticky override removed — ensure no sticky left */
+aside .card { position: static; top: auto; }

@@ -1,0 +1,256 @@
+<section class="py-12 px-4 bg-[var(--ts-bg)] text-[var(--ts-text)]" style="margin-top:6rem">
+  <div class="max-w-5xl mx-auto space-y-8">
+
+    <!-- HERO / Başlık kartı -->
+    <article class="card bg-[var(--ts-surface)] border border-[var(--ts-border)] rounded-xl shadow-md overflow-hidden">
+      <div class="relative">
+        <img [src]="article.coverImage" alt="{{ article.title }}" class="w-full h-72 object-cover" />
+        <div class="absolute left-6 bottom-6 bg-black/60 text-white p-3 rounded-md">
+          <div class="flex items-center gap-3">
+            <img [src]="article.author.avatar" alt="author" class="w-12 h-12 rounded-full border-2 border-white shadow-sm"/>
+            <div>
+              <div class="font-semibold">{{ article.author.name }}</div>
+              <div class="text-xs opacity-80">{{ article.publishedAt | date:'mediumDate' }} • {{ article.readingTime || '—' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 md:p-8">
+        <header class="mb-4">
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{{ article.title }}</h1>
+          <p class="text-muted mt-2">{{ article.subtitle }}</p>
+        </header>
+
+        <!-- tags & actions -->
+        <div class="flex items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span *ngFor="let t of article.tags" class="badge badge-outline">#{{ t }}</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="btn btn-ghost" (click)="toggleBookmark()" aria-label="Bookmark">
+              <i class="fa" [ngClass]="bookmarking ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'"></i>
+            </button>
+
+            <button class="btn btn-primary" (click)="toggleLike()"  >
+              <i class="fa-regular fa-heart mr-2" [ngClass]="liked ? 'fa-solid' : ''"></i> {{ article.likes }}
+            </button>
+
+            <div class="dropdown dropdown-end">
+              <button tabindex="0" class="btn btn-ghost">Paylaş <i class="fa-solid fa-share-nodes ml-2"></i></button>
+              <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-white rounded-box w-44">
+                <li><a (click)="share('twitter')"><i class="fa-brands fa-twitter mr-2"></i>Twitter</a></li>
+                <li><a (click)="share('facebook')"><i class="fa-brands fa-facebook mr-2"></i>Facebook</a></li>
+                <li><a (click)="share('whatsapp')"><i class="fa-brands fa-whatsapp mr-2"></i>WhatsApp</a></li>
+                <li><a (click)="share('copy')"><i class="fa-solid fa-link mr-2"></i>Kopyala</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-6">
+          <!-- Main content -->
+          <div class="md:col-span-3 space-y-6">
+
+            <!-- İçindekiler (mobilde gizli, masaüstünde göster) -->
+            <div class="hidden md:block sticky top-28 mb-2">
+              <div class="bg-[var(--ts-surface)] p-3 rounded-md border border-[var(--ts-border)] shadow-sm">
+                <div class="text-xs text-muted font-semibold mb-2">İÇİNDEKİLER</div>
+                <ul class="text-sm space-y-1">
+                  <li *ngFor="let s of article.sections; let i = index">
+                    <a class="text-[var(--ts-primary)] hover:underline" href="#section-{{ i }}">
+                      {{
+                        s.type === 'h2'
+                          ? s.text
+                          : (s.type === 'p'
+                            ? (s.text ? (s.text | slice:0:40) + (s.text.length > 40 ? '...' : '') : '')
+                            : s.type)
+                      }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Makale bölümleri -->
+            <div>
+              <!-- Güvenli kontrol: sections varsa döngü çalışsın -->
+              <ng-container *ngIf="article?.sections?.length">
+                <ng-container *ngFor="let s of article.sections; let i = index">
+                  <section [id]="'section-' + i" class="max-w-none">
+                    <ng-container [ngSwitch]="s.type">
+
+                      <!-- Başlık -->
+                      <h2 *ngSwitchCase="'h2'" class="text-2xl font-bold mt-6 mb-3">
+                        {{ s.text }}
+                      </h2>
+
+                      <!-- Paragraf -->
+                      <p *ngSwitchCase="'p'">
+                        {{ s.text }}
+                      </p>
+
+                      <!-- Alıntı -->
+                      <blockquote *ngSwitchCase="'quote'"
+                                  class="border-l-4 border-[var(--ts-primary)] pl-4 italic text-lg my-4">
+                        “{{ s.text }}”
+                        <div *ngIf="s.author" class="mt-2 font-semibold text-sm">{{ s.author }}</div>
+                      </blockquote>
+
+                      <!-- Resim -->
+                      <div *ngSwitchCase="'img'" class="my-4">
+                        <figure class="rounded-lg overflow-hidden shadow-sm">
+                          <img [src]="s.src" [alt]="s.caption || 'image'" class="w-full object-cover" />
+                          <figcaption class="text-xs text-muted p-2">{{ s.caption }}</figcaption>
+                        </figure>
+                      </div>
+
+                      <!-- Sıralı liste -->
+                      <ol *ngSwitchCase="'ol'" class="list-decimal ml-6">
+                        <li *ngFor="let it of s.items">{{ it }}</li>
+                      </ol>
+
+                      <!-- Sırasız liste -->
+                      <ul *ngSwitchCase="'ul'" class="list-disc ml-6">
+                        <li *ngFor="let it of s.items">{{ it }}</li>
+                      </ul>
+
+                    </ng-container>
+                  </section>
+                </ng-container>
+              </ng-container>
+
+            </div>
+
+            <!-- Galeri (varsa) -->
+            <div *ngIf="galleryImages.length > 0" class="space-y-2">
+              <h3 class="text-lg font-semibold">Galeri</h3>
+              <div class="grid md:grid-cols-2 gap-3">
+                <div *ngFor="let img of galleryImages">
+                  <img [src]="img.src"
+                       alt="Galeri Görseli"
+                       class="w-full h-48 object-cover rounded-lg cursor-pointer"
+                       (click)="openImage(img.src)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="card bg-[var(--ts-surface)] border border-[var(--ts-border)] p-4 flex items-center justify-between">
+              <div>
+                <div class="font-bold">Atölyelere Katılmak İster misin?</div>
+                <div class="text-sm text-muted">Yeni başlayanlar için haftalık seanslar ve ücretsiz deneme dersleri.</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn btn-outline" (click)="router.navigate(['/okullar'])">Atölyeleri Gör</button>
+                <button class="btn btn-primary" (click)="router.navigate(['/kayit-ol'])">Hemen Kaydol</button>
+              </div>
+            </div>
+
+            <!-- Yorumlar -->
+            <div>
+              <h3 class="text-xl font-bold">Yorumlar ({{ comments.length }})</h3>
+
+              <form class="mt-3 flex gap-3 items-start" (submit)="submitComment(); $event.preventDefault();">
+                <img src="https://i.pravatar.cc/60" class="w-10 h-10 rounded-full" alt="avatar" />
+                <div class="flex-1">
+                  <textarea name="comment" [(ngModel)]="newComment" rows="2" class="textarea textarea-bordered w-full" placeholder="Yorum ekle..."></textarea>
+                  <div class="flex justify-between items-center mt-2">
+                    <div class="text-xs text-muted">Nazik ve yapıcı yorumlar lütfen.</div>
+                    <div class="flex gap-2">
+                      <button type="button" class="btn btn-ghost" (click)="newComment=''">Temizle</button>
+                      <button class="btn btn-primary" type="submit">Gönder</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <div class="mt-4 space-y-4">
+                <div *ngFor="let c of comments" class="p-3 rounded-lg border border-[var(--ts-border)] bg-white flex gap-3 items-start">
+                  <img [src]="c.avatar" class="w-10 h-10 rounded-full" alt="{{ c.author }}" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold">{{ c.author }}</div>
+                      <div class="text-xs text-muted">{{ c.createdAt }}</div>
+                    </div>
+                    <p class="mt-1">{{ c.text }}</p>
+                    <div class="mt-2 text-xs flex items-center gap-3">
+                      <button class="btn btn-ghost btn-sm"><i class="fa-regular fa-thumbs-up mr-1"></i> {{ c.likes || 0 }}</button>
+                      <button class="btn btn-ghost btn-sm">Cevapla</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="md:col-span-1 space-y-6">
+            <div class="card p-4 bg-[var(--ts-surface)] border border-[var(--ts-border)]">
+              <div class="flex items-center gap-3">
+                <img [src]="article.author.avatar" class="w-14 h-14 rounded-full border-2" alt="author" />
+                <div>
+                  <div class="font-semibold">{{ article.author.name }}</div>
+                  <div class="text-xs text-muted">{{ article.author.bio }}</div>
+                </div>
+              </div>
+
+              <div class="mt-4 space-y-2">
+                <button class="btn btn-outline w-full" (click)="openAuthorProfile()">Eğitmenin Profili</button>
+                <button class="btn btn-primary w-full" (click)="router.navigate(['/okullar'])">Derslere Gözat</button>
+              </div>
+            </div>
+
+            <div class="card p-4 bg-[var(--ts-surface)] border border-[var(--ts-border)]">
+              <h4 class="font-semibold mb-3">Öne Çıkan Yazılar</h4>
+              <div class="space-y-3">
+                <div *ngFor="let r of related" class="flex items-center gap-3">
+                  <img [src]="r.coverImage || 'https://img.daisyui.com/images/stock/photo-1502685104226-ee32379fefbe.webp'" class="w-12 h-12 object-cover rounded-md" alt="{{ r.title }}" />
+                  <div>
+                    <a class="font-semibold hover:underline cursor-pointer">{{ r.title }}</a>
+                    <div class="text-xs text-muted">{{ r.readingTime }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-4 bg-[var(--ts-surface)] border border-[var(--ts-border)]">
+              <h4 class="font-semibold mb-2">Bültene Katıl</h4>
+              <p class="text-sm text-muted mb-3">Yeni rehberler, atölye duyuruları ve özel içerikler e-posta ile.</p>
+              <div class="flex gap-2">
+                <input type="email" placeholder="E-posta" class="input input-bordered flex-1" />
+                <button class="btn btn-primary">Abone Ol</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </article>
+
+    <!-- Related CTA + grid -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-xl font-bold">Daha fazla Tango Rehberi</h3>
+        <p class="text-muted">Benzer makaleler ve pratik listeleri</p>
+      </div>
+      <button class="btn btn-primary" (click)="router.navigate(['/blog'])">Tüm Blogları Gör</button>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div *ngFor="let r of related" class="card bg-[var(--ts-surface)] border border-[var(--ts-border)] p-0 overflow-hidden">
+        <img [src]="r.coverImage" class="w-full h-44 object-cover" alt="{{ r.title }}" />
+        <div class="p-4">
+          <div class="text-xs text-muted mb-1">{{ r.readingTime }}</div>
+          <h4 class="font-semibold">{{ r.title }}</h4>
+          <p class="text-sm text-muted mt-2">Kısa özet veya tanıtım metni (örnek).</p>
+          <div class="mt-4 flex justify-between items-center">
+            <button class="btn btn-ghost">Oku</button>
+            <div class="text-xs text-muted">{{ r.commentsCount || 0 }} yorum</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

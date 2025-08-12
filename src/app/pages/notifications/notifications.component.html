@@ -1,0 +1,113 @@
+<section class="min-h-screen bg-base-100 px-4 py-10" style="margin-top: 6rem">
+  <div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <!-- Header (güncel) -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold" style="color:var(--ts-primary)">Bildirimler</h1>
+        <p class="text-sm text-muted mt-1">Son etkinlikler, mesajlar ve uyarılar burada. Önemli olanları sakla, gereksizleri temizle.</p>
+
+        <div class="relative">
+          <input style="width: 100%;" [(ngModel)]="q" placeholder="Ara (başlık, içerik)..." class="input input-bordered input-sm pr-10" />
+          <i class="fa fa-search absolute right-3 top-2.5 text-muted"></i>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <button class="ts-btn ts-btn-primary btn-sm" (click)="markAllAsRead()">
+            <i class="fa-solid fa-check me-2"></i> Tümünü Okundu Yap
+          </button>
+          <button class="ts-btn ts-btn-ghost btn-sm" (click)="markAllAsUnread()">
+            <i class="fa-solid fa-arrow-rotate-left me-2"></i> Tümünü Okunmadı Yap
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg p-3 flex flex-wrap items-center gap-2 shadow-sm">
+      <div class="flex flex-wrap gap-2 items-center">
+        <button (click)="setFilter('all')" class="ts-btn btn-sm" [ngClass]="filter==='all' ? 'ts-btn-primary' : 'ts-btn-ghost'">Hepsi</button>
+        <button (click)="setFilter('unread')" class="ts-btn btn-sm" [ngClass]="filter==='unread' ? 'ts-btn-primary' : 'ts-btn-ghost'">Okunmamış</button>
+        <button (click)="setFilter('message')" class="ts-btn btn-sm" [ngClass]="filter==='message' ? 'ts-btn-primary' : 'ts-btn-ghost'">Mesaj</button>
+        <button (click)="setFilter('event')" class="ts-btn btn-sm" [ngClass]="filter==='event' ? 'ts-btn-primary' : 'ts-btn-ghost'">Etkinlik</button>
+        <button (click)="setFilter('match')" class="ts-btn btn-sm" [ngClass]="filter==='match' ? 'ts-btn-primary' : 'ts-btn-ghost'">Eşleşme</button>
+        <button (click)="setFilter('badge')" class="ts-btn btn-sm" [ngClass]="filter==='badge' ? 'ts-btn-primary' : 'ts-btn-ghost'">Rozet</button>
+      </div>
+
+      <div class="ml-auto flex items-center gap-2">
+        <button class="ts-btn ts-btn-ghost btn-sm" (click)="clearRead()">
+          <i class="fa-solid fa-broom me-2"></i> Temizle: Okunanlar
+        </button>
+        <button *ngIf="!showAll" class="ts-btn ts-btn-primary btn-sm" (click)="loadAll()">Tümünü Göster</button>
+      </div>
+    </div>
+
+
+    <!-- List -->
+    <ul class="space-y-3">
+      <li *ngFor="let n of filteredNotifications"
+          class="notification-item flex items-start gap-4 p-4 rounded-lg transition-shadow"
+          [ngClass]="{'muted': n.muted, 'read': n.read, 'unread': !n.read}" >
+        <!-- Icon (type sınıfı ekleniyor) -->
+        <div class="mt-1 flex-shrink-0">
+          <div class="icon-wrap" [ngClass]="n.type">
+            <i class="fa-solid"
+               [ngClass]="{
+           'fa-envelope': n.type==='message',
+           'fa-heart': n.type==='match',
+           'fa-calendar-days': n.type==='event',
+           'fa-award': n.type==='badge',
+           'fa-bell': n.type==='system'
+         }"></i>
+          </div>
+        </div>
+
+        <!-- İçerik -->
+        <div class="flex-1 min-w-0" (click)="openTarget(n)" role="button" style="cursor:pointer;">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-3">
+                <h3 class="font-semibold truncate" [class.text-muted]="n.read" [class.text-gray-900]="!n.read">{{ n.title }}</h3>
+                <span *ngIf="!n.read" class="badge badge-rose badge-sm">Yeni</span>
+              </div>
+              <p class="text-sm text-gray-600 mt-1 truncate">{{ n.description }}</p>
+            </div>
+
+            <!-- zaman pill -->
+            <div>
+              <span class="time-pill" [ngClass]="{'time-unread': !n.read, 'time-read': n.read}">{{ timeAgo(n.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- actions -->
+        <div class="flex flex-col items-end gap-2">
+          <button class="ts-btn ts-btn-ghost btn-xs" (click)="$event.stopPropagation(); toggleRead(n)">
+            <i class="fa-solid" [ngClass]="n.read ? 'fa-check' : 'fa-circle'"></i>
+          </button>
+
+          <div class="flex gap-2">
+            <button class="ts-btn ts-btn-ghost btn-xs" (click)="$event.stopPropagation(); mute(n)" [title]="n.muted ? 'Sessizliği kaldır' : 'Sessize al'">
+              <i class="fa-solid" [ngClass]="n.muted ? 'fa-bell-slash' : 'fa-bell'"></i>
+            </button>
+
+            <button class="ts-btn ts-btn-ghost btn-xs" (click)="$event.stopPropagation(); remove(n)" title="Sil">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+
+    <!-- empty state -->
+    <div *ngIf="filteredNotifications.length === 0" class="text-center text-gray-500 py-8">
+      <div class="text-xl font-semibold mb-2">Temiz & sessiz</div>
+      <div class="text-sm">Seçtiğin filtreye uygun bildirim yok. Yeni etkinlikler için takipte kal.</div>
+    </div>
+
+  </div>
+</section>

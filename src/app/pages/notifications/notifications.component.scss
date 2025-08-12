@@ -1,0 +1,64 @@
+:host { display:block; }
+
+/* icon round + type colors */
+.icon-wrap {
+  width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  border-radius:10px;
+  color: white;
+  font-size: 1rem;
+  box-shadow: var(--ts-shadow-soft);
+}
+
+/* types */
+.icon-wrap.message { background: linear-gradient(90deg, var(--ts-primary), var(--ts-primary-600)); }
+.icon-wrap.match   { background: linear-gradient(90deg, #7c3aed, #6d28d9); } /* purple */
+.icon-wrap.event   { background: linear-gradient(90deg,#f59e0b,#f97316); } /* amber */
+.icon-wrap.badge   { background: linear-gradient(90deg,#10b981,#059669); } /* emerald */
+.icon-wrap.system  { background: linear-gradient(90deg,#06b6d4,#0ea5b7); } /* cyan */
+
+/* notification item base */
+.notification-item {
+  border: 1px solid rgba(15,23,36,0.04);
+  background: var(--ts-surface);
+  transition: box-shadow 160ms, transform 160ms;
+  position: relative;
+  overflow: hidden;
+}
+
+/* accent bar left for unread */
+.notification-item.unread::before {
+  content:'';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--ts-primary), var(--ts-primary-600));
+}
+
+/* muted look */
+.notification-item.muted { opacity: 0.65; }
+
+/* hover lift */
+.notification-item:hover { transform: translateY(-4px); box-shadow: var(--ts-shadow-strong); }
+
+/* time pill */
+.time-pill {
+  display:inline-block;
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  background: rgba(15,23,36,0.04);
+  color: var(--ts-muted);
+}
+.time-pill.time-unread { background: rgba(255,61,107,0.12); color: var(--ts-primary); font-weight:700; }
+
+/* active filter style (already bound) */
+.ts-btn.ts-btn-primary { box-shadow: 0 8px 28px rgba(15,23,36,0.06); transform: translateY(-2px); }
+
+/* small screens */
+@media (max-width:640px) {
+  .icon-wrap { width:40px; height:40px; }
+  .time-pill { font-size:.7rem; padding:.2rem .4rem; }
+  .notification-item.unread::before { width:3px; }
+}

@@ -1,0 +1,259 @@
+<section class="min-h-screen bg-base-100 px-6 py-10" style="margin-top: 6rem">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- LEFT: profile card (NOT sticky anymore) -->
+    <aside class="lg:col-span-1">
+      <div class="card p-6 shadow-md"> <!-- sticky kaldırıldı -->
+        <div class="flex items-center gap-4">
+          <div class="w-20 h-20 rounded-xl overflow-hidden border-2" [ngStyle]="{'border-color': 'var(--ts-primary)'}">
+            <img [src]="avatarPreview || ('https://i.pravatar.cc/150?u=' + user.email)" alt="avatar" class="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">{{ user.name }}</h3>
+            <div class="text-xs text-muted">@{{ user.username }}</div>
+          </div>
+        </div>
+
+        <p class="text-sm text-muted mt-3 line-clamp-3">{{ user.bio }}</p>
+
+        <div class="mt-4 space-y-2 text-sm">
+          <div><strong>Konum:</strong> {{ user.location }}</div>
+          <div><strong>Dil:</strong> {{ user.language }}</div>
+          <div><strong>Zaman Dilimi:</strong> {{ user.timezone }}</div>
+        </div>
+
+      </div>
+
+      <div class="card p-4 mt-4 shadow-md">
+        <h4 class="font-semibold mb-2">Bağlı Hesaplar</h4>
+        <div class="flex flex-col gap-2">
+          <div *ngFor="let acc of linkedAccounts" class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i [ngClass]="{
+            'fab fa-google text-2xl': acc.provider === 'google',
+            'fab fa-facebook text-2xl': acc.provider === 'facebook',
+            'fab fa-apple text-2xl': acc.provider === 'apple',
+            'fab fa-instagram text-2xl': acc.provider === 'instagram'
+          }" [style.color]="acc.connected ? 'var(--ts-primary)' : 'var(--ts-muted)'" ></i>
+              <span class="capitalize">{{ acc.provider }}</span>
+            </div>
+
+            <!-- tema butonları kullanıldı -->
+            <button (click)="toggleAccount(acc)"
+                    class="ts-btn btn-sm"
+                    [ngClass]="acc.connected ? 'ts-btn-ghost' : 'ts-btn-primary'">
+              {{ acc.connected ? 'Bağlantıyı Kes' : 'Bağla' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: forms -->
+    <main class="lg:col-span-2 space-y-6">
+
+      <!-- Başlık -->
+      <div class="text-center lg:text-left">
+        <h1 class="text-4xl font-extrabold" style="color:var(--ts-primary)">Hesap Ayarları</h1>
+        <p class="text-muted">Profilini, güvenliği ve tercihlerini buradan yönet.</p>
+      </div>
+
+      <!-- Profil Bilgileri -->
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="bg-white shadow-lg rounded-lg p-8 space-y-6">
+        <h2 class="text-2xl font-semibold">Profil Bilgileri</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label"><span class="label-text">Ad Soyad</span></label>
+            <input formControlName="name" type="text" class="input input-bordered w-full" />
+            <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="text-xs text-error mt-1">Geçerli bir isim gir.</div>
+          </div>
+
+          <div>
+            <label class="label"><span class="label-text">Kullanıcı Adı</span></label>
+            <input formControlName="username" type="text" class="input input-bordered w-full" />
+            <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched" class="text-xs text-error mt-1">3-30 karakter, sadece harf/rakam/._- olabilir.</div>
+          </div>
+
+          <div>
+            <label class="label"><span class="label-text">E-posta</span></label>
+            <input formControlName="email" type="email" class="input input-bordered w-full" />
+          </div>
+
+          <div>
+            <label class="label"><span class="label-text">Konum</span></label>
+            <input formControlName="location" type="text" class="input input-bordered w-full" />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="label"><span class="label-text">Profil Fotoğrafı</span></label>
+            <div class="flex items-center gap-3">
+              <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
+              <div *ngIf="avatarPreview" class="w-16 h-16 rounded-md overflow-hidden border" [style.border-color]="'var(--ts-primary)'">
+                <img [src]="avatarPreview" class="object-cover w-full h-full" />
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="label"><span class="label-text">Bio</span></label>
+            <textarea formControlName="bio" rows="3" class="textarea textarea-bordered w-full"></textarea>
+          </div>
+
+          <div>
+            <label class="label"><span class="label-text">Zaman Dilimi</span></label>
+            <select formControlName="timezone" class="select select-bordered w-full">
+              <option *ngFor="let tz of timezones" [value]="tz">{{ tz }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label"><span class="label-text">Dil</span></label>
+            <select formControlName="language" class="select select-bordered w-full">
+              <option *ngFor="let l of languages" [value]="l">{{ l }}</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <label class="label"><span class="label-text">Profil Görünürlüğü</span></label>
+            <select formControlName="profileVisibility" class="select select-bordered w-full">
+              <option value="public">Herkese açık</option>
+              <option value="followers">Takipçilere açık</option>
+              <option value="private">Sadece ben</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input formControlName="showEmail" type="checkbox" class="toggle toggle-primary" />
+            <label class="text-sm">E-postam gösterilsin</label>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <button type="submit" class="btn ts-btn-primary">Kaydet</button>
+        </div>
+      </form>
+
+      <!-- Şifre Değiştir -->
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="bg-white shadow-lg rounded-lg p-8 space-y-6">
+        <h2 class="text-2xl font-semibold">Şifre Değiştir</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-1">
+            <label class="label"><span class="label-text">Mevcut</span></label>
+            <input formControlName="currentPassword" type="password" class="input input-bordered w-full" />
+          </div>
+          <div class="md:col-span-1">
+            <label class="label"><span class="label-text">Yeni</span></label>
+            <input formControlName="newPassword" type="password" class="input input-bordered w-full" />
+          </div>
+          <div class="md:col-span-1">
+            <label class="label"><span class="label-text">Tekrar</span></label>
+            <input formControlName="confirmPassword" type="password" class="input input-bordered w-full" />
+          </div>
+        </div>
+
+        <div *ngIf="passwordForm.errors" class="text-xs text-error">Yeni şifreler eşleşmiyor.</div>
+
+        <div class="text-right">
+          <button type="submit" class="btn ts-btn-primary">Değiştir</button>
+        </div>
+      </form>
+
+      <!-- Bildirim Tercihleri -->
+      <form [formGroup]="prefsForm" (ngSubmit)="savePrefs()" class="bg-white shadow-lg rounded-lg p-8 space-y-6">
+        <h2 class="text-2xl font-semibold">Bildirim Tercihleri</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="notifyMessages" class="toggle toggle-primary" />
+            <span>Yeni Mesaj Bildirimi</span>
+          </label>
+
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="notifyMatches" class="toggle toggle-primary" />
+            <span>Yeni Eşleşme Bildirimi</span>
+          </label>
+
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="notifyEvents" class="toggle toggle-primary" />
+            <span>Etkinlik Hatırlatma</span>
+          </label>
+
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="weeklyDigest" class="toggle toggle-primary" />
+            <span>Haftalık Özet (E-posta)</span>
+          </label>
+
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="twoFactorEnabled" class="toggle toggle-primary" (change)="enable2FA()" />
+            <span>İki Adımlı Doğrulama</span>
+          </label>
+        </div>
+
+        <div class="text-right">
+          <button type="submit" class="btn ts-btn-primary">Tercihleri Kaydet</button>
+        </div>
+      </form>
+
+      <!-- Hesap İşlemleri -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <section class="bg-white shadow-lg rounded-lg p-6">
+          <h3 class="font-semibold mb-3">Veri ve İndirme</h3>
+          <p class="text-sm text-muted">Hesabındaki tüm verilerin JSON dökümünü al.</p>
+          <div class="mt-4 flex gap-2">
+            <button class="btn btn-outline" (click)="downloadData()">Verileri İndir</button>
+            <button class="btn btn-ghost" (click)="requestDelete()">Hesabı Silme Talebi</button>
+          </div>
+        </section>
+
+        <section class="bg-white shadow-lg rounded-lg p-6">
+          <h3 class="font-semibold mb-3 text-rose-700">Hesabı Dondur / Kapat</h3>
+          <p class="text-sm text-muted">Hesabını geçici dondurabilir veya kalıcı silme talebi başlatabilirsin.</p>
+          <div class="mt-4 flex gap-2">
+            <button class="btn btn-error" (click)="freezeAccount()">Hesabı Dondur</button>
+            <button class="btn btn-outline" (click)="requestDelete()">Kalıcı Silme</button>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modallar -->
+  <div *ngIf="showFreezeConfirm" class="fixed inset-0 flex items-center justify-center px-4" style="">
+    <div class="fixed inset-0 bg-black/40" (click)="cancelFreeze()"></div>
+    <div class="bg-white rounded-lg p-6 shadow-xl max-w-md w-full z-50">
+      <h3 class="text-xl font-bold">Hesabı Dondur</h3>
+      <p class="text-sm text-muted mt-2">Hesabı dondurmak istersen, giriş yapamazsın. Onaylıyor musun?</p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button class="btn btn-ghost" (click)="cancelFreeze()">İptal</button>
+        <button class="btn btn-error" (click)="confirmFreeze()">Evet, Dondur</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showDeleteConfirm" class="fixed inset-0 flex items-center justify-center px-4">
+    <div class="fixed inset-0 bg-black/40" (click)="cancelDelete()"></div>
+    <div class="bg-white rounded-lg p-6 shadow-xl max-w-md w-full z-50">
+      <h3 class="text-xl font-bold">Hesabı Kalıcı Sil</h3>
+      <p class="text-sm text-muted mt-2">Bu işlem geri alınamaz. Emin misin?</p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button class="btn btn-ghost" (click)="cancelDelete()">İptal</button>
+        <button class="btn btn-error" (click)="confirmDelete()">Evet, Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="show2faModal" class="fixed inset-0 flex items-center justify-center px-4">
+    <div class="fixed inset-0 bg-black/40" (click)="close2FAModal()"></div>
+    <div class="bg-white rounded-lg p-6 shadow-xl max-w-md w-full z-50">
+      <h3 class="text-xl font-bold">İki Adımlı Doğrulama</h3>
+      <p class="text-sm text-muted mt-2">Bu demo modda 2FA hızlıca etkinleştirilir. Devam edilsin mi?</p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button class="btn btn-ghost" (click)="close2FAModal()">İptal</button>
+        <button class="btn ts-btn-primary" (click)="close2FAModal()">Evet, Etkinleştir</button>
+      </div>
+    </div>
+  </div>
+</section>

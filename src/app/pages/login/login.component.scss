@@ -1,0 +1,35 @@
+.min-h-screen{
+  min-height: 70vh;
+}
+
+:host { display: block; }
+
+/* Card polish, tema gölgeleri */
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(15,23,36,0.04);
+  box-shadow: var(--ts-shadow-strong);
+}
+
+/* input focus vurgusu tema token ile */
+.input:focus {
+  box-shadow: 0 8px 30px var(--ts-focus);
+  border-color: var(--ts-primary-600);
+}
+
+/* small responsive */
+@media (max-width: 640px) {
+  .card { margin: 0 0.5rem; }
+}
+
+/* social button tweaks */
+.ts-btn-event {
+  background: linear-gradient(90deg, var(--ts-secondary), var(--ts-secondary-600));
+  color: #fff;
+}
+
+/* toggle primary style override for small size */
+.toggle.toggle-primary { border-color: var(--ts-primary-600); }
+
+/* spinner icon spacing */
+.fa-spinner { margin-right: .5rem; }

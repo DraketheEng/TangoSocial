@@ -1,0 +1,217 @@
+<section class="py-12 px-4 bg-base-100 text-gray-800" style="margin-top: 6rem">
+  <div class="max-w-6xl mx-auto space-y-8">
+
+    <!-- HERO -->
+    <div class="card grid lg:grid-cols-3 gap-6 items-center p-6">
+      <div class="lg:col-span-1 flex items-center justify-center">
+        <img [src]="school.heroImage" alt="{{school.name}}" class="w-48 h-48 rounded-lg object-cover border-4" [style.border-color]="'var(--ts-primary)'" />
+      </div>
+
+      <div class="lg:col-span-2 space-y-3">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-4xl font-extrabold" style="color:var(--ts-primary)">{{ school.name }}</h1>
+            <p class="text-muted mt-1">{{ school.shortDesc }}</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="badge" style="background: linear-gradient(90deg,var(--ts-accent), var(--ts-primary)); color:#082032;">{{ school.tags[0] }}</span>
+              <span class="badge badge-secondary">{{ school.students }} Öğrenci</span>
+              <span class="badge badge-info">{{ school.instructors }} Eğitmen</span>
+              <span class="badge badge-lg">⭐ {{ school.rating }} ({{ school.ratingCount }})</span>
+            </div>
+          </div>
+
+          <div class="flex gap-4 justify-center lg:justify-start items-center whitespace-nowrap">
+            <button (click)="toggleFollow()" class="ts-btn" [ngClass]="following ? 'ts-btn-ghost' : 'ts-btn-primary'">
+              <i class="fa-solid" [ngClass]="following ? 'fa-user-check' : 'fa-user-plus'"></i>
+              <span class="ml-2">{{ following ? 'Takiptesin' : 'Takip Et' }}</span>
+            </button>
+
+            <button routerLink="/mesajlar" class="ts-btn ts-btn-ghost">
+              <i class="fa-solid fa-envelope mr-2"></i> Mesaj
+            </button>
+
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-sm text-muted mt-2">
+          <a [href]="'https://maps.google.com?q=' + encodeURIComponent(school.address)" target="_blank" class="hover:underline">
+            📍 {{ school.address }}
+          </a>
+          <span>•</span>
+          <a href="tel:{{school.phone}}" class="hover:underline">📞 {{ school.phone }}</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID: Left (about/events/reviews) + Right (instructors/gallery/posts) -->
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- LEFT (main content) -->
+      <main class="lg:col-span-2 space-y-6">
+        <!-- About -->
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold mb-2">Hakkında</h2>
+          <p class="text-gray-700 leading-relaxed">{{ school.longDesc }} </p>
+        </div>
+
+        <!-- OKUL PAYLAŞIMLARI -->
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold">Okula Ait Paylaşımlar</h3>
+            <div class="text-sm text-muted">{{ posts.length }} paylaşım</div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <article *ngFor="let post of posts" class="card overflow-hidden cursor-pointer" (click)="openPost(post.id)">
+              <ng-container *ngIf="post?.imageUrl; else textOnly">
+                <div class="relative">
+                  <img [src]="post?.imageUrl" alt="post" class="w-full h-48 object-cover" />
+                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[rgba(15,23,36,0.6)] to-transparent p-3">
+                    <div class="text-sm text-white line-clamp-2">{{ post.caption }}</div>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="text-sm text-muted">{{ post.city }} • {{ post.createdAt | date:'shortDate' }}</div>
+                    <div class="flex items-center gap-2">
+                      <button class="ts-btn ts-btn-ghost btn-sm" (click)="$event.stopPropagation();"><i class="fa-regular fa-bookmark"></i></button>
+                      <button class="ts-btn btn-sm" (click)="$event.stopPropagation(); onLike();"><i class="fa-regular fa-heart mr-1"></i> {{ post.likesCount }}</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-template #textOnly>
+                <div class="p-4 card--text">
+                  <div class="text-gray-800">{{ post.caption }}</div>
+                  <div class="mt-4 flex items-center justify-between text-sm text-muted">
+                    <div>{{ post.city || '—' }} • {{ post.createdAt | date:'shortDate' }}</div>
+                    <div class="flex items-center gap-2">
+                      <button class="ts-btn ts-btn-ghost btn-sm" (click)="$event.stopPropagation();"><i class="fa-regular fa-bookmark"></i></button>
+                      <button class="ts-btn btn-sm" (click)="$event.stopPropagation(); onLike();"><i class="fa-regular fa-heart mr-1"></i> {{ post.likesCount }}</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </article>
+          </div>
+
+          <div class="mt-6 text-center">
+            <button class="ts-btn ts-btn-ghost" (click)="loadMore()">Daha Fazla Yükle</button>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- RIGHT (side content) -->
+      <aside class="lg:col-span-1 space-y-6">
+        <!-- Instructors -->
+        <div class="card p-4">
+          <h4 class="font-semibold mb-3">Eğitmenler</h4>
+          <div class="space-y-3">
+            <div routerLink="/profil/oykum-cayir" *ngFor="let ins of instructors" class="flex items-center gap-3 p-2 rounded hover:bg-[rgba(15,23,36,0.02)] cursor-pointer">
+              <img [src]="ins.avatar" class="w-12 h-12 rounded-full border-2" [style.border-color]="'var(--ts-primary)'" />
+              <div class="flex-1">
+                <div class="font-semibold">{{ ins.name }}</div>
+                <div class="text-xs text-muted">{{ ins.title }}</div>
+              </div>
+              <div>
+                <span class="badge badge-sm" style="background: linear-gradient(90deg,var(--ts-accent), var(--ts-primary)); color:#082032">{{ ins.badge }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="card p-4">
+          <h4 class="font-semibold mb-3">Galeri</h4>
+          <div class="grid grid-cols-3 gap-2">
+            <img *ngFor="let g of gallery" [src]="g" class="w-full h-20 object-cover rounded cursor-pointer" (click)="openGalleryImage(g)" />
+          </div>
+        </div>
+
+        <!-- Quick Contact Card -->
+        <div class="card p-4 text-center">
+          <h4 class="font-semibold mb-2">Hızlı İletişim</h4>
+          <p class="text-sm text-muted mb-3">Soruların mı var? Hemen mesaj gönder veya arama yap.</p>
+          <button class="ts-btn ts-btn-primary w-full mb-2" routerLink="/mesajlar">Mesaj Gönder</button>
+          <a class="ts-btn ts-btn-ghost w-full" [href]="'tel:' + school.phone">Ara: {{ school.phone }}</a>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Events (table + booking) -->
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Yaklaşan Ders & Workshop'lar</h3>
+        <span class="text-sm text-muted">{{ events.length }} Etkinlik</span>
+      </div>
+
+      <div class="overflow-x-auto mt-4">
+        <table class="table w-full">
+          <thead>
+          <tr><th>Tarih</th><th>Etkinlik</th><th>Başlangıç</th><th>Süre</th><th>Yer</th><th>Kontenjan</th><th></th></tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let e of events">
+            <td>{{ e.date }}</td>
+            <td class="font-semibold">{{ e.title }}</td>
+            <td>{{ e.start }}</td>
+            <td>{{ e.duration }}</td>
+            <td>{{ e.place }}</td>
+            <td>{{ e.capacity }}</td>
+            <td class="text-right">
+              <button class="ts-btn ts-btn-primary btn-sm" (click)="openBooking($event, e)">Rezervasyon</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="card p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Öğrenci Yorumları</h3>
+        <a class="ts-btn ts-btn-ghost btn-sm">Tümünü Gör</a>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div *ngFor="let r of reviews" class="p-4 bg-white rounded-lg border">
+          <div class="flex items-center gap-3 mb-2">
+            <img [src]="r.avatar" class="w-10 h-10 rounded-full" />
+            <div>
+              <div class="font-semibold text-gray-800">{{ r.author }}</div>
+              <div class="text-xs text-muted">{{ r.createdAt }}</div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-700">{{ r.text }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div *ngIf="showBookingModal" class="fixed inset-0 flex items-center justify-center px-4">
+    <div class="fixed inset-0 bg-black/40" (click)="closeBooking()"></div>
+    <div class="bg-white rounded-lg p-6 shadow-xl max-w-md w-full z-50">
+      <h3 class="text-lg font-bold">Rezervasyon — {{ bookingEvent?.title || 'Etkinlik' }}</h3>
+      <p class="text-sm text-muted mt-1">{{ bookingEvent?.date }} • {{ bookingEvent?.start }} • {{ bookingEvent?.place }}</p>
+
+      <div class="mt-4 grid grid-cols-1 gap-3">
+        <input [(ngModel)]="bookingName" class="input input-bordered" placeholder="Ad Soyad" />
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-muted">Kişi: </label>
+          <input type="number" [(ngModel)]="bookingSeats" class="input input-bordered w-20" min="1" />
+        </div>
+      </div>
+
+      <div class="mt-4 flex justify-end gap-2">
+        <button class="ts-btn ts-btn-ghost" (click)="closeBooking()">İptal</button>
+        <button class="ts-btn ts-btn-primary" (click)="confirmBooking()">Rezervasyonu Onayla</button>
+      </div>
+    </div>
+  </div>
+</section>

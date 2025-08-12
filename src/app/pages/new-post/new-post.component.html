@@ -1,0 +1,163 @@
+<section class="mt-24 px-4" style="margin-top: 8rem; margin-bottom: 4rem">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- SOL: Yeni Gönderi -->
+    <div class="lg:col-span-2">
+      <div class="card glass shadow-xl p-6">
+        <div class="flex items-center gap-4 mb-6">
+          <img src="https://i.pravatar.cc/100" alt="Avatar" class="w-14 h-14 rounded-full border-2 border-primary avatar-img" />
+          <div>
+            <h1 class="text-2xl font-bold">Yeni Gönderi</h1>
+            <p class="text-sm text-muted">Max {{maxChars}} karakter • Görsel ekle daha çok etkileşim al yo</p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" class="space-y-6" (ngSubmit)="submit()">
+
+          <!-- Görsel -->
+          <div>
+            <label class="label font-semibold">Görsel</label>
+            <input #fileInput type="file" accept="image/*" class="file-input file-input-bordered w-full"
+                   (change)="onFileChange($event)" />
+            <div *ngIf="filePreview" class="mt-3 flex items-start gap-3">
+              <img [src]="filePreview" alt="preview" class="w-28 h-20 object-cover rounded-md border" />
+              <div class="flex-1">
+                <div class="font-semibold">{{ fileName }}</div>
+                <div class="text-xs text-muted mt-1">Görsel eklendi. Önizlemede tam boy görünür.</div>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-ghost btn-sm mr-2" (click)="removeFile()">Kaldır</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Açıklama -->
+          <div>
+            <label class="label font-semibold">Açıklama</label>
+            <textarea formControlName="caption" rows="4" maxlength="{{maxChars}}"
+                      placeholder="Ne paylaşıyorsun?" class="textarea textarea-bordered w-full"></textarea>
+            <div class="flex justify-between text-xs text-muted mt-1">
+              <span>{{ captionLength }} / {{ maxChars }}</span>
+              <span>Emojiler & etiketler desteklenir</span>
+            </div>
+          </div>
+
+          <!-- Şehir & Etiket -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="label font-semibold">Şehir</label>
+              <select formControlName="city" class="select select-bordered w-full">
+                <option value="">Şehir seç</option>
+                <option>Ankara</option>
+                <option>İstanbul</option>
+                <option>İzmir</option>
+                <option>Bursa</option>
+              </select>
+            </div>
+            <div>
+              <label class="label font-semibold">Etiketler</label>
+              <input formControlName="tags" type="text" placeholder="tango, milonga, partner" class="input input-bordered w-full" />
+              <div class="flex flex-wrap gap-2 mt-2">
+                <ng-container *ngFor="let t of tagList">
+                  <span class="badge" style="background: linear-gradient(90deg, var(--ts-accent), var(--ts-primary)); color:#082032; font-weight:700">#{{ t }}</span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ayarlar -->
+          <div class="flex items-center justify-between">
+            <label class="cursor-pointer flex items-center gap-2">
+              <input type="checkbox" formControlName="isPublic" class="toggle toggle-primary" />
+              <span class="text-sm">Herkese açık</span>
+            </label>
+            <div class="flex gap-2">
+              <button type="reset" class="btn btn-ghost" (click)="form.reset({ isPublic: true }); removeFile();">Temizle</button>
+
+              <!-- Önizle butonu açar -->
+              <button type="button" class="btn btn-outline" (click)="openPreview()">Önizle</button>
+
+              <button type="submit" class="btn ts-btn-primary">Gönder</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- SAĞ: (sidebar kaldırıldı — yalnızca popüler etiket kartı bıraktım) -->
+    <div class="space-y-6">
+      <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+          <h3 class="text-lg font-bold mb-2">Popüler Etiketler</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-outline">#tango</span>
+            <span class="badge badge-outline">#milonga</span>
+            <span class="badge badge-outline">#dans</span>
+            <span class="badge badge-outline">#müzik</span>
+            <span class="badge badge-outline">#partner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW MODAL (DaisyUI style, controlled by previewOpen) -->
+  <div *ngIf="previewOpen" role="dialog" aria-modal="true" aria-label="Gönderi önizleme"
+       class="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div class="fixed inset-0 bg-black/40" (click)="closePreview()"></div>
+
+    <div class="relative max-w-3xl w-full mx-auto">
+      <div class="card bg-base-100 shadow-xl p-4 md:p-6">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/100" alt="avatar" class="w-12 h-12 rounded-full" />
+            <div>
+              <div class="font-semibold">Sen</div>
+              <div class="text-xs text-muted">{{ form.value.city || 'Şehir seçilmedi' }} • şimdi</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" aria-label="Kapat" (click)="closePreview()">
+            Kapat
+          </button>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <p class="text-gray-700" [innerText]="form.value.caption || 'Paylaşım açıklaması burada görünecek...'"></p>
+
+            <div *ngIf="filePreview; else noMedia" class="mt-4">
+              <img [src]="filePreview" alt="media" class="w-full max-h-96 object-cover rounded-md" />
+            </div>
+            <ng-template #noMedia>
+              <div class="mt-4 border border-dashed rounded-lg p-6 text-center text-muted">
+                Medya önizleme yok
+              </div>
+            </ng-template>
+          </div>
+
+          <aside class="md:col-span-1">
+            <div class="card p-3">
+              <h4 class="font-bold mb-2">Etiketler</h4>
+              <div class="flex flex-wrap gap-2">
+                <ng-container *ngFor="let t of tagList">
+                  <span class="badge badge-outline">#{{ t }}</span>
+                </ng-container>
+                <span *ngIf="tagList.length === 0" class="text-xs text-muted">Etiket yok</span>
+              </div>
+
+              <div class="mt-4">
+                <h4 class="font-bold mb-1">Ayarlar</h4>
+                <div class="text-sm text-muted">Görünürlük: <span class="font-semibold">{{ form.value.isPublic ? 'Herkese açık' : 'Özel' }}</span></div>
+              </div>
+
+              <div class="mt-4">
+                <button class="btn ts-btn-primary w-full" (click)="submit()">Gönder</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

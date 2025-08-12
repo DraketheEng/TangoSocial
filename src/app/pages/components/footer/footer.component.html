@@ -1,0 +1,96 @@
+<footer class="bg-[var(--ts-surface)] border-t border-[var(--ts-border)] text-[var(--ts-text)]">
+  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+    <!-- Brand / About -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="ts-logo-mark p-2 rounded-md shadow-sm">
+          <span class="logo-bongita text-[1.25rem]">T</span>
+        </div>
+        <div>
+          <div class="ts-logo-title">TangoSocial</div>
+          <div class="ts-logo-sub">Topluluk • Dersler • Etkinlikler</div>
+        </div>
+      </div>
+
+      <p class="text-sm text-[var(--ts-muted)]">
+        Sahnenin ritmini yakala. Etkinlikler, atölyeler ve yerel milongalar — hepsi tek yerde.
+      </p>
+
+      <div class="flex items-center gap-2">
+        <button class="ts-btn ts-btn-primary" (click)="goTo('/kayit')">Üye Ol</button>
+        <button class="ts-btn ts-btn-event" (click)="goTo('/etkinlikler')">Etkinliklere Gözat</button>
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <nav class="text-sm">
+      <h6 class="font-semibold mb-3">Hızlı Erişim</h6>
+      <ul class="space-y-2">
+        <li><a routerLink="/hakkimizda" class="link link-hover">Hakkımızda</a></li>
+        <li><a routerLink="/okullar" class="link link-hover">Okullar & Eğitmenler</a></li>
+        <li><a routerLink="/etkinlikler" class="link link-hover">Etkinlik Takvimi</a></li>
+        <li><a routerLink="/blog" class="link link-hover">Blog & Rehberler</a></li>
+        <li><a routerLink="/yardim" class="link link-hover">Yardım Merkezi</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contact / Social -->
+    <div class="text-sm">
+      <h6 class="font-semibold mb-3">İletişim</h6>
+      <p class="text-[var(--ts-muted)]">📧 <a href="mailto:info@tangosocial.com" class="link link-hover">info@tangosocial.com</a></p>
+      <p class="text-[var(--ts-muted)]">📞 <a href="tel:+905551234567" class="link link-hover">+90 555 123 4567</a></p>
+
+      <div class="mt-4">
+        <h6 class="font-semibold mb-2">Bizi Takip Et</h6>
+        <div class="flex items-center gap-3">
+          <a aria-label="Instagram" class="p-2 rounded-md hover:bg-[var(--ts-bg)]" href="#" target="_blank" rel="noopener">
+            <i class="fab fa-instagram text-[var(--ts-primary)] text-lg"></i>
+          </a>
+          <a aria-label="YouTube" class="p-2 rounded-md hover:bg-[var(--ts-bg)]" href="#" target="_blank" rel="noopener">
+            <i class="fab fa-youtube text-[var(--ts-secondary)] text-lg"></i>
+          </a>
+          <a aria-label="Facebook" class="p-2 rounded-md hover:bg-[var(--ts-bg)]" href="#" target="_blank" rel="noopener">
+            <i class="fab fa-facebook text-[var(--ts-muted)] text-lg"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Newsletter / Legal -->
+    <div class="space-y-3">
+      <h6 class="font-semibold">Bültene Katıl</h6>
+      <p class="text-sm text-[var(--ts-muted)]">Haftalık etkinlik özeti ve özel indirimler. İptal etmek çok kolay.</p>
+
+      <form (ngSubmit)="subscribe()" #newsletterForm="ngForm" class="flex gap-2 mt-3">
+        <input
+          name="email"
+          type="email"
+          required
+          [(ngModel)]="newsletterEmail"
+          placeholder="E-posta adresin"
+          class="input input-bordered w-full"
+          aria-label="E-posta"
+        />
+        <button class="ts-btn ts-btn-primary" [disabled]="!newsletterEmail || subscribing" type="submit" aria-label="Abone Ol">
+          <i *ngIf="!subscribing" class="fa-solid fa-paper-plane mr-1"></i>
+          <i *ngIf="subscribing" class="fa-solid fa-spinner fa-spin mr-1"></i>
+          Katıl
+        </button>
+      </form>
+
+      <div class="mt-4 text-xs text-[var(--ts-muted)]">
+        <a routerLink="/privacy" class="link link-hover">Gizlilik Politikası</a> •
+        <a routerLink="/terms" class="link link-hover">Kullanım Şartları</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-[var(--ts-border)] mt-6">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--ts-muted)]">
+      <div>© {{ currentYear }} TangoSocial. Tüm hakları saklıdır.</div>
+    </div>
+  </div>
+</footer>

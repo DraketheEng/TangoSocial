@@ -1,0 +1,57 @@
+<main class="ts-error" role="main" aria-labelledby="err-title">
+  <div class="ts-error__card" role="region" aria-label="404 sayfa bulunamadı">
+    <!-- left: info -->
+    <div class="ts-error__info">
+      <h1 id="err-title">Sayfa bulunamadı</h1>
+
+      <p>
+        Aradığın sayfa burada değil. Link değişmiş, taşınmış veya yanlış yazılmış olabilir.
+        Hemen seni doğru yöne gönderiyorum — hızlıca arayabilir veya ana sayfaya dönebilirsin.
+      </p>
+
+      <div class="ts-search" role="search" aria-label="Site içinde ara">
+        <input type="search" placeholder="Dansçı, okul veya etkinlik ara..." aria-label="Site içinde ara" style="width: 84%"/>
+        <button class="btn btn--primary" aria-label="Ara">Ara</button>
+      </div>
+
+      <div class="ts-error__meta">
+        <a class="btn btn--primary" href="/" title="Ana sayfaya dön">Ana Sayfaya Dön</a>
+        <a class="btn" href="/okullar" title="Okullar">Okullar</a>
+        <a class="btn" href="/etkinlikler" title="Etkinlikler">Etkinlikler</a>
+        <a class="btn btn--ghost" href="/iletisim" title="Bize ulaş">Bize Ulaş</a>
+      </div>
+
+      <small class="ts-error__small">İpuçları: URL'yi kontrol et, yazım hatası varsa düzelt ya da ana sayfadan arama yap.</small>
+    </div>
+
+    <!-- right: illustration -->
+    <div class="ts-error__art" aria-hidden="true">
+      <!-- modern, minimal illustration -->
+      <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="G" x1="0" x2="1">
+            <stop offset="0" stop-color="#ffecf0"/>
+            <stop offset="1" stop-color="#e6fbff"/>
+          </linearGradient>
+          <filter id="f" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#e6eef2" flood-opacity="0.6"/>
+          </filter>
+        </defs>
+
+        <rect x="40" y="40" width="520" height="320" rx="20" fill="url(#G)" filter="url(#f)"/>
+
+        <!-- folded map/icon -->
+        <g transform="translate(120,80)">
+          <path d="M30 10 L60 0 L100 18 L130 8 L170 28 L200 18 L200 200 L30 200 Z" fill="#fff" stroke="rgba(15,23,36,0.04)" stroke-width="1"/>
+          <circle cx="120" cy="86" r="36" fill="#ff3d6b" opacity="0.95"/>
+          <text x="120" y="92" text-anchor="middle" font-size="28" font-weight="700" fill="#fff">?</text>
+          <g transform="translate(0,160)">
+            <rect x="90" y="0" width="220" height="10" rx="5" fill="rgba(15,23,36,0.04)"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="ts-error__code" aria-hidden="true">404</div>
+  </div>
+</main>

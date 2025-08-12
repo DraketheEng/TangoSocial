@@ -1,0 +1,177 @@
+<section class="py-12 px-4 bg-[var(--ts-bg)] text-[var(--ts-text)]" style="margin-top:6rem;">
+  <div class="max-w-screen-xl mx-auto grid lg:grid-cols-4 gap-8">
+
+    <!-- SIDEBAR (filters & popular) -->
+    <aside class="lg:col-span-1">
+      <div class="card p-4 mb-6">
+        <h3 class="text-lg font-semibold mb-3">Ara & Filtrele</h3>
+        <div class="space-y-3">
+          <input type="search" [(ngModel)]="q" (ngModelChange)="applyFilters()" placeholder="Başlık, yazar veya etiket ara..."
+                 class="input input-bordered w-full" aria-label="Blog ara" />
+
+          <label class="label pb-1"><span class="label-text">Kategori</span></label>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <button *ngFor="let c of categories" (click)="setCategory(c)" [ngClass]="selectedCategory===c ? 'badge badge-primary' : 'badge badge-outline'"
+                    class="cursor-pointer">
+              {{ c }}
+            </button>
+          </div>
+
+          <label class="label pb-1"><span class="label-text">Etiket</span></label>
+          <div class="flex flex-wrap gap-2">
+            <button *ngFor="let t of tags" (click)="toggleTag(t)" [ngClass]="selectedTags.has(t) ? 'badge badge-ghost badge-lg border-[var(--ts-primary)]' : 'badge badge-outline'"
+                    class="cursor-pointer">
+              {{ t }}
+            </button>
+          </div>
+
+          <div class="divider my-2"></div>
+
+          <h4 class="text-sm text-muted mb-2">Popüler Rehberler</h4>
+          <ul class="space-y-2">
+            <li *ngFor="let p of popularPosts" class="flex items-start gap-3">
+              <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="" class="w-12 h-12 rounded-md object-cover" />
+              <div>
+                <button (click)="openPost(p)" class="text-sm font-semibold text-[var(--ts-primary)] hover:underline text-left">{{ p.title }}</button>
+                <div class="text-xs text-muted">{{ p.readTime }} • {{ p.author }}</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="text-lg font-semibold mb-3">Yazarlar</h3>
+        <div class="space-y-3">
+          <div *ngFor="let a of authors" class="flex items-center gap-3">
+            <img [src]="a.avatar" alt="" class="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <div class="font-semibold">{{ a.name }}</div>
+              <div class="text-xs text-muted">{{ a.title }}</div>
+            </div>
+            <button class="ml-auto ts-btn ts-btn-ghost btn-sm" (click)="followAuthor(a)">Takip Et</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN: hero + posts -->
+    <main class="lg:col-span-3 space-y-6">
+
+      <!-- HERO -->
+      <div class="card p-6 flex flex-col md:flex-row items-center gap-6 bg-[var(--ts-surface)]">
+        <div class="flex-1">
+          <h1 class="text-3xl md:text-4xl font-extrabold" style="color:var(--ts-primary)">Blog & Rehberler</h1>
+          <p class="text-muted mt-2 max-w-2xl">
+            Tangoya dair derin ama anlaşılır rehberler, sahne notları, ayakkabı & kıyafet önerileri, milonga adabı ve
+            eğitmen röportajları. Yeniysen değil, doğru yerdesin — kısa ve işe yarar içerikler burada.
+          </p>
+        </div>
+
+        <div class="w-full md:w-64">
+          <div class="card bg-[var(--ts-surface)] p-4 shadow-sm">
+            <div class="text-sm text-muted">Bültene katıl — yeni rehberler kapında</div>
+            <div class="mt-3 flex gap-2">
+              <input [(ngModel)]="newsletterEmail" type="email" placeholder="e-posta adresin" class="input input-bordered flex-1" />
+              <button (click)="subscribe()" class="ts-btn ts-btn-primary">Abone Ol</button>
+            </div>
+            <div *ngIf="newsletterMsg" class="text-xs mt-2 text-[var(--ts-muted)]">{{ newsletterMsg }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="card p-0 overflow-hidden relative">
+          <div class="grid grid-cols-1 md:grid-cols-2">
+            <div class="relative">
+              <img [src]="featured[0].imageUrl" alt="" class="w-full h-64 object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[rgba(15,23,36,0.32)] to-transparent"></div>
+            </div>
+            <div class="p-6 flex flex-col">
+              <div class="text-xs text-muted mb-2">{{ featured[0].category }} • {{ featured[0].readTime }}</div>
+              <h2 class="text-2xl font-bold mb-2">{{ featured[0].title }}</h2>
+              <p class="text-gray-700 mb-4 flex-1">{{ featured[0].excerpt }}</p>
+              <div class="flex items-center gap-3">
+                <img [src]="featured[0].authorAvatar" alt="" class="w-10 h-10 rounded-full" />
+                <div class="text-sm">
+                  <div class="font-semibold">{{ featured[0].author }}</div>
+                  <div class="text-xs text-muted">{{ featured[0].date | date:'mediumDate' }}</div>
+                </div>
+                <div class="ml-auto">
+                  <button class="ts-btn ts-btn-primary" (click)="openPost(featured[0])">Oku</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div class="space-y-4">
+          <article *ngFor="let f of featured.slice(1)" class="tango-card p-4 flex gap-4 items-start">
+            <img [src]="f.imageUrl" alt="" class="w-28 h-20 object-cover rounded-md" />
+            <div class="flex-1">
+              <div class="text-xs text-muted">{{ f.category }} • {{ f.readTime }}</div>
+              <h3 class="font-semibold">{{ f.title }}</h3>
+              <p class="text-sm text-muted line-clamp-2">{{ f.excerpt }}</p>
+              <div class="mt-2 flex items-center gap-2">
+                <button class="ts-btn btn-xs btn-ghost" (click)="openPost(f)">Oku</button>
+                <div class="text-xs text-muted">{{ f.date | date:'shortDate' }}</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- POSTS GRID / LIST -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article *ngFor="let p of pagedPosts" class="card p-0 overflow-hidden flex flex-col h-full">
+          <!-- görsel yoksa metin odaklı görünüm -->
+          <ng-container *ngIf="p.imageUrl; else textOnly">
+            <img [src]="p.imageUrl" alt="" class="w-full h-48 object-cover" />
+          </ng-container>
+
+          <ng-template #textOnly>
+            <div class="p-4 bg-[var(--ts-surface)] border-b border-[var(--ts-border)]">
+              <div class="text-xs text-muted mb-2">{{ p.category }} • {{ p.readTime }}</div>
+              <h3 class="text-lg font-semibold">{{ p.title }}</h3>
+            </div>
+          </ng-template>
+
+          <div class="p-4 flex-1 flex flex-col">
+            <p class="text-sm text-gray-700 flex-1">{{ p.excerpt }}</p>
+            <div class="mt-4 flex items-center gap-3">
+              <img [src]="p.authorAvatar" alt="" class="w-8 h-8 rounded-full" />
+              <div class="text-xs">
+                <div class="font-semibold">{{ p.author }}</div>
+                <div class="text-muted">{{ p.date | date:'shortDate' }}</div>
+              </div>
+              <div class="ml-auto flex items-center gap-2">
+                <button class="ts-btn btn-sm btn-ghost" (click)="toggleBookmark(p)"><i class="fa-regular fa-bookmark"></i></button>
+                <button class="ts-btn ts-btn-primary btn-sm" (click)="openPost(p)">Oku</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- pagination / load more -->
+      <div class="flex justify-center mt-4">
+        <button *ngIf="!allLoaded" (click)="loadMore()" class="ts-btn ts-btn-primary">Daha Fazla Yükle</button>
+        <div *ngIf="allLoaded" class="text-muted">Tüm içeriği gördün.</div>
+      </div>
+
+      <!-- CTA FOOTER -->
+      <div class="card p-6 bg-[var(--ts-surface)] flex flex-col md:flex-row items-center gap-6">
+        <div class="flex-1">
+          <h3 class="text-2xl font-bold">Derinleşmek ister misin?</h3>
+          <p class="text-muted">Uzman rehberler, teknik analizler ve öğretici derin-dalgalara başla. TangoSocial’da her hafta yeni içerik.</p>
+        </div>
+        <div>
+          <button routerLink="/kayit-ol" class="ts-btn ts-btn-primary">Ücretsiz Üye Ol</button>
+          <button routerLink="/okullar" class="ts-btn btn-ghost ml-2">Yakındaki Okulları Gör</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</section>

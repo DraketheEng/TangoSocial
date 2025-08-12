@@ -1,0 +1,36 @@
+:host { display: block; }
+
+/* Reuse global card styles but add small tweaks */
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(15,23,36,0.06);
+  box-shadow: var(--ts-shadow-soft);
+}
+
+/* Text-only left box */
+.bg-gradient-to-b {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+/* Ensure badges use theme */
+.badge {
+  font-weight: 700;
+  border: none;
+}
+
+/* Dropdown panel (use theme variables) */
+.ts-dropdown-panel {
+  background: var(--ts-surface);
+  border: 1px solid var(--ts-border);
+  box-shadow: var(--ts-shadow-strong);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .card { grid-template-columns: 1fr !important; }
+  .bg-gradient-to-b { border-radius: 0.75rem; }
+}
+
+/* Minor polish */
+.ts-like-btn i { pointer-events: none; }

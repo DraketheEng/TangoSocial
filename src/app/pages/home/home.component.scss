@@ -1,0 +1,47 @@
+section{
+  margin-bottom: 3rem;
+}
+
+.mt-10{
+  margin-top: 8rem;
+}
+
+.card figure img {
+  width: 100%;
+  height: 200px; /* Sabit yükseklik */
+  object-fit: cover; /* Fotoğrafı kırp, orantıyı koru */
+  border-top-left-radius: 0.5rem; /* rounded-lg köşeleri üstte uygula */
+  border-top-right-radius: 0.5rem;
+  display: block;
+}
+
+/* small helpers for the feed */
+.card { border-radius: 1rem; }
+.ts-btn { border-radius: .75rem; padding: .45rem .85rem; }
+.ts-like-btn { background: linear-gradient(90deg, var(--ts-primary), var(--ts-primary-600)); color: white; border: none; }
+.input { border-radius: 9999px; border: 1px solid rgba(15,23,36,0.06); }
+.text-muted { color: var(--ts-muted); }
+
+/* images: keep crisp rounded corners */
+.card img { display:block; }
+
+/* subtle hover on sidebar mini-cards */
+aside .card > .grid div:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(15,23,36,0.06); transition: transform 180ms ease; }
+
+/* improve table / stat in sidebar */
+.table .stat-value { font-weight: 800; color: var(--ts-primary); }
+
+/* mobile spacing adjustments */
+@media (max-width: 768px) {
+  .card { border-radius: 0.75rem; }
+  .avatar-img { width:40px; height:40px; }
+}
+
+.p-6 { padding: 1rem; padding-top: 2rem;}
+
+.modal .p-6 { padding: 2rem; }
+
+h4 { margin: 0; }
+
+p { margin: 0; }
+

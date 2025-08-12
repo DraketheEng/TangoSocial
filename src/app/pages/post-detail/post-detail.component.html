@@ -1,0 +1,113 @@
+<article class="card bg-white border-[1px] border-[rgba(15,23,36,0.06)] rounded-[1rem] overflow-hidden shadow-sm grid grid-cols-1 lg:grid-cols-2 gap-6 p-0 items-stretch" style="margin-top: 8rem">
+  <!-- IMAGE / MEDIA (conditional) -->
+  <ng-container *ngIf="post?.imageUrl; else textOnlyPost">
+    <div class="relative">
+      <img [src]="post?.imageUrl" alt="Post media" class="w-full h-full object-cover aspect-[4/5] lg:aspect-auto rounded-l-[1rem]" />
+      <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[rgba(15,23,36,0.08)] to-transparent pointer-events-none"></div>
+    </div>
+  </ng-container>
+
+  <ng-template #textOnlyPost>
+    <!-- when no image, left column is a subtle accent block -->
+    <div class="bg-gradient-to-b from-[rgba(255,61,107,0.06)] to-transparent p-6 flex items-center justify-center">
+      <div class="text-sm text-muted">Görsel yok — yazılı içerik</div>
+    </div>
+  </ng-template>
+
+  <div class="p-6 flex flex-col justify-start gap-4 min-h-0">
+    <!-- HEADER ROW (avatar + actions) -->
+    <div class="flex items-start gap-4">
+      <img [src]="post?.authorAvatar" alt="avatar" class="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+      <div class="flex-1">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h4 class="font-bold text-gray-800">{{ post?.author }}</h4>
+            <p class="text-xs text-muted">{{ post?.createdAt | date:'short' }} • {{ post?.city }}</p>
+          </div>
+
+          <div class="flex items-center gap-2 relative">
+            <!-- Kaydet -->
+            <button (click)="onSave($event)" class="ts-btn ts-btn-ghost btn-sm" aria-label="Kaydet">
+              <i class="fa-regular fa-bookmark"></i>
+            </button>
+
+            <!-- Daha fazla -> dropdown -->
+            <button (click)="toggleMore($event, post!.id)" class="ts-btn ts-btn-ghost btn-sm" aria-label="Daha fazla">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+
+            <div *ngIf="openDropdownForPostId === post?.id" class="absolute right-0 top-0 mt-2 ts-dropdown-panel w-44 z-50" (click)="$event.stopPropagation()">
+              <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="report(post!.id)">Rapor Et</button>
+              <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="mute(post!.id)">Kişiyi Sessize Al</button>
+              <button class="block w-full text-left px-3 py-2 rounded hover:bg-gray-50" (click)="bookmark(post!.id)">İşaretle</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPTION -->
+    <p class="text-gray-700 leading-relaxed" [innerText]="post?.caption"></p>
+
+    <div class="flex flex-wrap gap-2" *ngIf="post?.tags?.length">
+      <span *ngFor="let t of post?.tags" class="badge" style="background: linear-gradient(90deg,var(--ts-accent),var(--ts-primary)); color:#082032;">#{{ t }}</span>
+    </div>
+
+    <!-- bottom area -->
+    <div class="mt-auto space-y-2 text-sm">
+      <div class="flex items-center gap-3">
+        <span class="badge badge-primary">Popüler</span>
+        <p class="text-muted text-xs">{{ post?.likesCount }} beğeni • {{ post?.commentsCount }} yorum</p>
+      </div>
+
+      <div class="flex flex-col gap-2" *ngIf="post?.topComments?.length">
+        <div class="flex items-start gap-3" *ngFor="let c of post?.topComments">
+          <img [src]="c.avatarUrl" class="w-8 h-8 rounded-full" alt="comment avatar" />
+          <div>
+            <div class="text-sm"><strong>{{ c.author }}</strong> {{ c.text }}</div>
+            <div class="text-xs text-muted">{{ c.createdAt | date:'shortTime' }} • {{ c.likes || 0 }} beğeni</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <button class="text-xs text-muted hover:underline">Tüm yorumları gör ({{ post?.commentsCount }})</button>
+      </div>
+
+      <!-- action row -->
+      <div class="mt-3 border-t pt-4 flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <button class="ts-btn ts-btn-primary ts-like-btn px-3 py-1 text-sm" (click)="onLike($event)">
+            <i class="fa-regular fa-heart mr-2"></i> Beğen
+          </button>
+
+          <button class="ts-btn ts-btn-ghost btn-sm" (click)="openShare($event)">
+            <i class="fa-solid fa-share-nodes mr-1"></i> Paylaş
+          </button>
+        </div>
+      </div>
+
+      <!-- comment form -->
+      <form class="ml-auto flex items-center gap-2 w-full" (submit)="submitComment($event)">
+        <input [(ngModel)]="newComment" name="comment" type="text" placeholder="Yorum ekle..." class="input flex-1 rounded-full px-3 py-2 text-sm" />
+        <button class="text-[var(--ts-primary)] font-semibold text-sm" type="submit">Gönder</button>
+      </form>
+    </div>
+  </div>
+</article>
+
+<!-- Share modal -->
+<div *ngIf="shareModal" class="fixed inset-0 flex items-center justify-center px-4">
+  <div class="fixed inset-0 bg-black/40" (click)="closeShare()"></div>
+  <div class="bg-white rounded-lg p-6 shadow-xl max-w-md w-full z-50">
+    <h3 class="text-lg font-bold">Paylaş — {{ post?.author }}</h3>
+    <p class="text-sm text-muted">Kopyala veya sosyal ağlarında paylaş.</p>
+    <div class="mt-4 flex gap-2">
+      <input class="input input-bordered flex-1" [value]="(post ? ('/gonderi-detay/'+post.id) : '')" readonly />
+      <button class="ts-btn ts-btn-primary" (click)="closeShare()">Kopyala</button>
+    </div>
+    <div class="mt-4 text-right">
+      <button class="ts-btn ts-btn-ghost" (click)="closeShare()">Kapat</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+/* Text-only (no image) post card */
+.card--text {
+  min-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  background: var(--ts-surface);
+  padding: 1.25rem;
+}
+
+/* daha okunaklı başlık/alan */
+.card--text .text-gray-800 {
+  font-size: 0.96rem;
+  white-space: pre-wrap; /* kullanıcı satır kırmasını korur */
+  word-break: break-word;
+}
+
+/* küçük ekranlarda yükseklik ayarı */
+@media (max-width: 640px) {
+  .card--text { min-height: auto; padding: 1rem; }
+}

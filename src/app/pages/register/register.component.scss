@@ -1,0 +1,95 @@
+:host { display:block; }
+
+.register-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(15,23,36,0.04);
+  box-shadow: var(--ts-shadow-strong);
+}
+
+/* avatar preview styling */
+.avatar-preview { width:6rem; height:6rem; border-radius:9999px; }
+
+/* password strength bar colors are set inline via class names in TS helper */
+
+/* make sure the whole card fits nicely on common viewports */
+@media (min-width: 1024px) {
+  .register-card form { max-height: calc(100vh - 9rem); }
+}
+
+/* inputs smaller padding to reduce height */
+.input { padding-top: .5rem; padding-bottom: .5rem; }
+
+/* tidy file input */
+.file-input { padding: .45rem .6rem; }
+
+/* responsive tweaks */
+@media (max-width: 768px) {
+  .register-card form { grid-template-columns: 1fr; }
+  .avatar-preview { margin: 0 auto; }
+}
+
+/* ---------- Password icon alignment fixes ---------- */
+
+/* Ensure predictable sizing for the password inputs we control.
+   Limit the rule to inputs inside .relative containers to avoid global side-effects. */
+.relative > .input.input-bordered {
+  height: 44px;              /* sabit yükseklik */
+  line-height: 1.2;          /* tutarlı baseline */
+  padding-top: .55rem;
+  padding-bottom: .55rem;
+  box-sizing: border-box;    /* padding dahil yükseklik hesaplamasına dahil */
+}
+
+/* Password toggle button: absolutely positioned, vertically centered via transform.
+   Use right: .75rem (12px) to match pr-12; increase clickable area with px padding. */
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;            /* sağdan boşluk */
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .45rem .5rem;
+  border-radius: .5rem;
+  color: rgba(15,23,36,0.6);
+  transition: color 140ms, transform 120ms;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Hover / active */
+.password-toggle:hover {
+  color: var(--ts-primary);
+  transform: translateY(-50%) translateY(-2px);
+}
+
+/* Icon baseline */
+.password-toggle i {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Ensure the input has enough right padding so text never overlaps icon.
+   pr-12 class exists but enforce it here to be safe. */
+.relative > .input.input-bordered.pr-12,
+.relative > .input.input-bordered[ class*="pr-12" ] {
+  padding-right: 3rem; /* ~48px, yeterli alan */
+}
+
+/* If DaisyUI or other utilities override height on focus, keep it fixed */
+.relative > .input.input-bordered:focus {
+  height: 44px;
+}
+
+/* Confirm password uses same rules (it lives in .relative too) so it inherits above */
+/* Small-screen tweak (reduce height for compact devices) */
+@media (max-width: 640px) {
+  .relative > .input.input-bordered { height: 42px; }
+  .password-toggle { right: .6rem; padding: .35rem .45rem; }
+}
+
+

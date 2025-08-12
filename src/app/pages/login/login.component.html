@@ -1,0 +1,112 @@
+<section class="min-h-screen bg-base-100 flex items-center justify-center p-4" style="margin-top: 6rem">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-extrabold logo-bongita">TangoSocial</h1>
+      <p class="text-sm text-muted mt-2">Topluluğa giriş yap — dans, milonga, paylaşım.</p>
+    </div>
+
+    <div class="card bg-white shadow-xl rounded-lg overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold mb-3">Hesabına Giriş Yap</h2>
+        <p class="text-sm text-muted mb-4">E-posta adresinle devam et veya sosyal hesaplardan bağlan.</p>
+
+        <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" novalidate>
+
+          <!-- E-posta -->
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text font-medium">E-posta</span></label>
+            <input
+              name="email"
+              type="email"
+              required
+              email
+              [(ngModel)]="model.email"
+              placeholder="ornek@domain.com"
+              class="input input-bordered w-full"
+              aria-label="E-posta"
+            />
+            <div class="text-xs text-rose-600 mt-1" *ngIf="loginForm.submitted && loginForm.controls?.['email']?.invalid">
+              Geçerli bir e-posta giriniz.
+            </div>
+          </div>
+
+          <!-- Şifre -->
+          <div class="form-control mb-2 relative">
+            <label class="label"><span class="label-text font-medium">Şifre</span></label>
+            <div class="relative w-full">
+              <input
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                required
+                minlength="4"
+                [(ngModel)]="model.password"
+                placeholder="Şifreniz"
+                class="input input-bordered w-full pr-10"
+                aria-label="Şifre"
+              />
+              <span
+                class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 hover:text-gray-700"
+                (click)="toggleShowPassword()"
+              >
+    <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+  </span>
+            </div>
+            <div class="text-xs text-rose-600 mt-1" *ngIf="loginForm.submitted && loginForm.controls?.['password']?.invalid">
+              Şifrenizi giriniz.
+            </div>
+          </div>
+
+          <!-- Remember & forgot -->
+          <div class="flex items-center justify-between mt-3 mb-4">
+            <label class="flex items-center gap-3">
+              <input type="checkbox" name="remember" [(ngModel)]="model.remember" class="toggle toggle-primary" />
+              <span class="text-sm">Beni Hatırla</span>
+            </label>
+            <a routerLink="/sifremi-unuttum" class="text-sm text-rose-600 hover:underline">Şifreni mi unuttun?</a>
+          </div>
+
+          <!-- hata mesajı -->
+          <div *ngIf="errorMsg" class="p-3 rounded text-sm text-rose-700 bg-rose-50 border border-rose-100 mb-4">
+            {{ errorMsg }}
+          </div>
+
+          <!-- Giriş butonu -->
+          <div class="mb-4">
+            <button type="submit" class="ts-btn ts-btn-primary w-full" [disabled]="submitting">
+              <i *ngIf="!submitting" class="fa-solid fa-right-to-bracket mr-2"></i>
+              <i *ngIf="submitting" class="fa-solid fa-spinner fa-spin mr-2"></i>
+              Giriş Yap
+            </button>
+          </div>
+
+          <!-- ya da -->
+          <div class="flex items-center gap-3 justify-center text-sm text-muted mb-3">
+            <span class="h-px flex-1 bg-base-200"></span>
+            <span class="px-2">ya da</span>
+            <span class="h-px flex-1 bg-base-200"></span>
+          </div>
+
+          <!-- Sosyal girişler -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button type="button" class="ts-btn ts-btn-event w-full" (click)="socialLogin('google')">
+              <i class="fa-brands fa-google mr-2"></i>
+              Google
+            </button>
+            <button type="button" class="ts-btn ts-btn-ghost w-full" (click)="socialLogin('facebook')">
+              <i class="fa-brands fa-facebook mr-2"></i>
+              Facebook
+            </button>
+            <button type="button" class="ts-btn ts-btn-ghost w-full" (click)="socialLogin('apple')">
+              <i class="fa-brands fa-apple mr-2"></i>
+              Apple
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="p-4 border-t border-base-200 text-center bg-[rgba(15,23,36,0.02)]">
+        <p class="text-sm text-muted mb-2">Hesabın yok mu? <a routerLink="/kayit-ol" class="text-rose-600 font-semibold hover:underline">Kayıt Ol</a></p>
+      </div>
+    </div>
+  </div>
+</section>

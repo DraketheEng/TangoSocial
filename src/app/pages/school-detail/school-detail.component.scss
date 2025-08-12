@@ -1,0 +1,28 @@
+/* buton kırılmasını engelle */
+.whitespace-nowrap { white-space: nowrap; }
+
+/* text-only kart */
+.card--text {
+  min-height: 12rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+/* post grid image hover */
+.card img { transition: transform var(--ts-transition), box-shadow var(--ts-transition); }
+.card:hover img { transform: scale(1.02); }
+
+/* card--text responsive */
+@media (max-width:640px) {
+  .card--text { min-height: auto; padding: 1rem; }
+}
+
+/* küçük düzeltme: sağ sidebar genişliği, hero alignment için */
+@media (min-width: 1024px) {
+  main { grid-column: span 2 / auto; }
+  aside { grid-column: span 1 / auto; }
+}
+
+/* buton shrink kontrolü */
+.flex-shrink-0 { flex-shrink: 0; }

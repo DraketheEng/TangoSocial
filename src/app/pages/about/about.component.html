@@ -1,0 +1,130 @@
+<section class="about-page min-h-screen bg-base-100 px-6 py-12" style="margin-top: 6rem;">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-[1fr_360px] gap-8">
+
+    <!-- HERO (tam genişlik) -->
+    <div class="lg:col-span-2 text-center mb-2">
+      <h1 class="text-5xl font-extrabold text-rose-700 mb-4">TangoSocial — Hakkında &amp; Kurallar</h1>
+      <p class="text-gray-600 max-w-3xl mx-auto">
+        Topluluğumuzun amacı, nasıl çalıştığı ve platform kuralları. Net, güvenli ve eğlenceli bir tango alanı yaratıyoruz.
+      </p>
+    </div>
+
+    <!-- MAIN: içerik -->
+    <main class="space-y-6">
+
+      <!-- About -->
+      <article class="panel bg-white shadow-lg rounded-lg p-6">
+        <h2 class="section-title">Platform Amacı</h2>
+        <p class="lead">
+          TangoSocial, tangocuları, eğitmenleri ve organizatörleri buluşturan bir topluluk platformudur — partner, etkinlik, içerik
+          ve yerel ağlar için.
+        </p>
+
+        <ul class="bullets grid sm:grid-cols-2 gap-3 mt-4">
+          <li>Partner/Grup bulma</li>
+          <li>Milonga, workshop ve pratik etkinlikleri</li>
+          <li>Video & içerik paylaşımı</li>
+          <li>Topluluk rozetleri ve sıralamalar</li>
+        </ul>
+      </article>
+
+      <!-- Rules -->
+      <article class="panel bg-white shadow-lg rounded-lg p-6 rules">
+        <h2 class="section-title">Topluluk Kuralları</h2>
+
+        <ol class="list-decimal list-inside text-gray-700 space-y-3 mt-3">
+          <li><strong>Saygı & Nezaket:</strong> Her zaman nazik ol. Ayrımcılık ve hakaret yasaktır.</li>
+          <li><strong>Güvenlik:</strong> Kişisel verileri herkese açık paylaşma; özel buluşmaları dikkatle planla.</li>
+          <li><strong>Telif & Gizlilik:</strong> İçerik paylaşırken telif haklarına ve gizliliğe dikkat et.</li>
+          <li><strong>Spam & Dolandırıcılık:</strong> Reklam ya da dolandırıcılık amaçlı içerikler kaldırılır.</li>
+          <li><strong>Etkinlik Sorumluluğu:</strong> Rezervasyonlara saygı göster; iptal gerekiyorsa erkenden bildir.</li>
+        </ol>
+
+        <div class="mt-4 p-4 rounded-md bg-rose-50 border-l-4 border-rose-500">
+          <strong class="block">Not:</strong>
+          Kurallara uymayanlar uyarılır, tekrarında geçici veya kalıcı kısıtlamalar uygulanır.
+        </div>
+      </article>
+
+      <!-- Privacy -->
+      <article class="panel bg-white shadow-lg rounded-lg p-6">
+        <h2 class="section-title">Gizlilik Politikası (Özet)</h2>
+        <p class="mt-2 text-gray-700">
+          Verileriniz güvenli tutulur. Kayıt esnasında verdiğiniz bilgiler hizmet, güvenlik ve kişiselleştirme amaçlı kullanılır.
+          Üçüncü tarafla paylaşım yalnızca yasal zorunluluklarda yapılır.
+        </p>
+
+        <ul class="bullets mt-4">
+          <li><strong>Veri Toplama:</strong> Kayıt, profil ve etkinlik işlemleri.</li>
+          <li><strong>Kullanım:</strong> Hizmet, öneri ve güvenlik kontrolleri.</li>
+          <li><strong>Güvenlik:</strong> SSL, erişim kontrolleri ve düzenli yedekleme.</li>
+        </ul>
+
+        <p class="text-sm text-gray-500 italic mt-3">
+          Detaylı politika için <a routerLink="/privacy" class="text-rose-600 hover:underline">tam gizlilik metnimizi</a> inceleyin.
+        </p>
+      </article>
+
+      <!-- FAQ (collapse) -->
+      <article class="panel bg-white shadow-lg rounded-lg p-6">
+        <h2 class="section-title">Sıkça Sorulan Sorular (SSS)</h2>
+
+        <div class="mt-4 space-y-3">
+          <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+            <input type="checkbox" />
+            <div class="collapse-title font-medium text-gray-800">Nasıl partner bulabilirim?</div>
+            <div class="collapse-content text-gray-700">Profilini tamamla, tercihlerini seç ve “Partner Bul” sistemiyle eşleş.</div>
+          </div>
+
+          <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+            <input type="checkbox" />
+            <div class="collapse-title font-medium text-gray-800">Ücretli mi?</div>
+            <div class="collapse-content text-gray-700">Platform ücretsiz; ancak bazı etkinlikler ücretli olabilir.</div>
+          </div>
+
+          <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+            <input type="checkbox" />
+            <div class="collapse-title font-medium text-gray-800">Destek ekibine nasıl ulaşırsın?</div>
+            <div class="collapse-content text-gray-700">
+              support@tangosocial.com adresine e-posta at veya sağdaki iletişim formunu kullan.
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Bottom CTA -->
+      <div class="text-center mt-2">
+        <a routerLink="/" class="btn btn-outline btn-rose">Ana Sayfaya Dön</a>
+      </div>
+    </main>
+
+    <!-- ASIDE: sticky iletişim kartı (sağ) -->
+    <aside class="sticky-contact self-start">
+      <div class="panel bg-white rounded-lg shadow-md p-5 sticky-card">
+        <h3 class="text-lg font-bold text-gray-800 mb-2">İletişim & Destek</h3>
+        <p class="text-sm text-gray-600 mb-3">Sorun mu var? Önerin mi? Kısa formu doldur, biz döneriz.</p>
+
+        <!-- basit form (TS entegrasyonu isteğe bağlı) -->
+        <form class="space-y-3" novalidate>
+          <input class="input w-full" type="text" name="name" placeholder="Adın (zorunlu)" required />
+          <input class="input w-full" type="email" name="email" placeholder="E-posta (zorunlu)" required />
+          <input class="input w-full" type="text" name="subject" placeholder="Konu" />
+          <textarea class="input w-full" name="message" rows="4" placeholder="Mesajın..." required></textarea>
+
+          <div class="flex gap-2 items-center">
+            <button type="submit" class="btn ts-btn ts-btn-primary w-full">Gönder</button>
+          </div>
+
+          <p class="text-xs text-muted mt-1">Ayrıca: <a href="mailto:support@tangosocial.com" class="text-rose-600 hover:underline">support@tangosocial.com</a></p>
+        </form>
+
+        <!-- contact quick info -->
+        <div class="mt-4 border-t pt-3 text-sm text-gray-700">
+          <div><strong>Telefon:</strong> +90 555 123 45 67</div>
+          <div class="mt-1"><strong>Adres:</strong> Kızılay, Ankara</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>

@@ -1,0 +1,153 @@
+/* new-post.component.scss
+   - Kullan: component stylesheet veya global scss.
+   - Temanın --ts-* değişkenlerini kullanır.
+*/
+
+:host { display:block; }
+
+/* Container */
+.ts-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.25rem;
+}
+
+/* Mobil: tek kolon */
+@media (max-width: 920px) {
+  .ts-container { grid-template-columns: 1fr; padding: .9rem; }
+}
+
+/* CARD */
+.card {
+  background: var(--ts-surface);
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  box-shadow: var(--ts-shadow-soft);
+  padding: 1rem;
+}
+
+/* FORM CARD specifics */
+.ts-newpost__form { padding: 1.1rem; display:flex; flex-direction:column; gap:1rem; }
+.ts-newpost__header { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+.ts-newpost__author { display:flex; gap:.75rem; align-items:center; }
+
+/* Avatar */
+.ts-avatar, .ts-avatar-sm {
+  width:52px; height:52px; border-radius:9999px; object-fit:cover;
+  border:2px solid #fff; box-shadow: var(--ts-shadow-soft);
+}
+.ts-avatar-sm { width:40px; height:40px; }
+
+/* Titles */
+.ts-newpost__title { margin:0; font-size:1.125rem; color:var(--ts-primary); font-weight:800; }
+.ts-newpost__subtitle { font-size:.875rem; color:var(--ts-muted); }
+
+/* DROPZONE */
+.ts-dropzone {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  border-radius:.75rem;
+  padding:.7rem;
+  border:1px dashed rgba(15,23,36,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(250,250,252,0.98));
+  cursor:pointer;
+  transition: box-shadow .14s ease, transform .12s ease, border-color .12s ease;
+}
+.ts-dropzone:focus, .ts-dropzone:hover {
+  outline:none;
+  box-shadow: 0 12px 34px rgba(15,23,36,0.06);
+  transform: translateY(-2px);
+  border-color: rgba(255,61,107,0.10);
+}
+.ts-dropzone__inner { display:flex; align-items:center; gap:1rem; width:100%; }
+.ts-dropzone__icon { width:36px; height:36px; color:var(--ts-primary); }
+.ts-dropzone__title { font-weight:700; color:var(--ts-text); }
+.ts-dropzone__hint { color:var(--ts-muted); font-size:.88rem; }
+.ts-dropzone__btn { margin-left:auto; }
+
+/* preview-inline (hidden by default) */
+.hide { display:none !important; }
+.ts-preview-inline { display:flex; gap:.75rem; align-items:center; margin-top:.5rem; }
+.ts-preview-img { width:88px; height:88px; object-fit:cover; border-radius:.6rem; border:1px solid rgba(15,23,36,0.04); box-shadow: 0 8px 22px rgba(2,6,23,0.04); }
+
+/* FIELDS */
+.ts-field { display:flex; flex-direction:column; gap:.5rem; }
+.ts-label { font-size:.9rem; font-weight:700; color:var(--ts-text); }
+.ts-textarea { min-height:92px; resize:vertical; border-radius:.75rem; padding:.65rem; border:1px solid var(--ts-border); background:var(--ts-surface); transition: box-shadow .12s ease; }
+.ts-textarea:focus { outline:none; box-shadow: 0 10px 30px var(--ts-focus); border-color:var(--ts-primary-600); }
+
+.ts-field__foot { display:flex; justify-content:space-between; align-items:center; margin-top:.25rem; font-size:.85rem; color:var(--ts-muted); }
+
+/* grid two */
+.ts-grid { display:grid; grid-template-columns: 1fr 1fr; gap:.75rem; }
+@media (max-width:640px) { .ts-grid { grid-template-columns: 1fr; } }
+
+/* inputs/selects */
+.ts-input, .ts-select {
+  width:100%; padding:.6rem .75rem; border-radius:.75rem; border:1px solid var(--ts-border); background:var(--ts-surface); transition: box-shadow .12s ease;
+}
+.ts-input:focus, .ts-select:focus { outline:none; box-shadow: 0 10px 30px var(--ts-focus); border-color:var(--ts-primary-600); }
+
+/* actions row */
+.ts-actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:.5rem; flex-wrap:wrap; }
+.ts-toggle { display:inline-flex; gap:.5rem; align-items:center; color:var(--ts-text); font-weight:600; }
+
+/* actions right */
+.ts-actions__right { display:flex; gap:.5rem; align-items:center; }
+.ts-btn { padding:.45rem .9rem; border-radius:.6rem; font-weight:700; cursor:pointer; border:1px solid transparent; background:transparent; }
+.ts-btn-ghost { background:transparent; border:1px solid rgba(15,23,36,0.04); }
+.ts-btn-primary {
+  background: linear-gradient(90deg, var(--ts-primary), var(--ts-primary-600));
+  color: #fff; border:none;
+  box-shadow: 0 10px 30px rgba(229,57,94,0.14);
+}
+.ts-btn:focus { outline:none; box-shadow: 0 10px 30px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+/* PREVIEW (RIGHT COLUMN) */
+.ts-newpost__preview {
+  position:relative;
+  padding:1rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  height:fit-content;
+  top:0;
+  align-self:start;
+}
+
+/* Make sticky on desktops */
+@media (min-width:921px) {
+  .ts-newpost__preview { position:sticky; top:6.25rem; }
+}
+
+/* preview content */
+.ts-preview__top { display:flex; align-items:center; gap:.6rem; }
+.ts-preview__body { min-height:160px; border-radius:.6rem; padding:.6rem; border:1px dashed rgba(15,23,36,0.04); background:linear-gradient(180deg, rgba(255,255,255,0.99), rgba(250,250,252,0.98)); display:flex; flex-direction:column; gap:.6rem; }
+.ts-preview__text { color:var(--ts-text); min-height:64px; line-height:1.45; }
+.ts-preview__media { min-height:120px; display:flex; align-items:center; justify-content:center; border-radius:.5rem; overflow:hidden; background:var(--ts-bg); }
+
+/* placeholder media */
+.ts-preview__placeholder { color:var(--ts-muted); }
+
+/* preview foot */
+.ts-preview__foot { display:flex; gap:.5rem; }
+
+/* small helpers */
+.visually-hidden { position:absolute !important; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+.text-muted { color:var(--ts-muted); }
+
+/* Accessibility focus visible */
+.ts-dropzone:focus-visible, .ts-btn:focus-visible, .ts-input:focus-visible, .ts-select:focus-visible, .ts-textarea:focus-visible {
+  box-shadow: 0 12px 36px var(--ts-focus);
+  border-radius:.6rem;
+}
+
+/* fine polish */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

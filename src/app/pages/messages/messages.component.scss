@@ -1,0 +1,52 @@
+.mt-10{
+  margin-top: 8rem;
+}
+
+.h-full{
+  height: 85%;
+}
+
+:host { display:block; height:100%; }
+
+/* chat bubble tweaks */
+.chat-bubble {
+  background: linear-gradient(90deg, rgba(255,61,107,0.06), rgba(6,182,212,0.02));
+  color: var(--ts-text);
+  padding: .6rem .9rem;
+  border-radius: 0.7rem;
+  max-width: 70%;
+  box-shadow: var(--ts-shadow-soft);
+}
+
+.chat-end .chat-bubble {
+  background: linear-gradient(90deg, var(--ts-primary), var(--ts-primary-600));
+  color: #fff;
+}
+
+.chat-bubble-image img { width: 320px; max-width: 80vw; height: auto; display:block; }
+
+/* composer */
+.emoji-picker {
+  position: absolute;
+  bottom: 3.4rem;
+  left: 0;
+  width: 14rem;
+  z-index: 60;
+}
+
+/* left list visuals */
+ul li { transition: box-shadow 160ms, transform 160ms; }
+ul li:hover { transform: translateY(-2px); box-shadow: var(--ts-shadow-strong); }
+
+/* make selected conversation pop */
+.bg-white.shadow-md { border-radius: .8rem; border: 1px solid rgba(15,23,36,0.06); }
+
+/* time pill and message meta */
+.chat-header { font-weight:700; font-size: .92rem; display:flex; align-items:center; gap: .5rem; }
+.chat-footer { font-size: .75rem; }
+
+/* responsive */
+@media (max-width: 768px) {
+  .chat-bubble { max-width: 84%; }
+  .emoji-picker { left: 1rem; width: 12rem; }
+}
